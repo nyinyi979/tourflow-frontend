@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { testimonials } from "@/lib/mocks";
+import { testimonials } from "@/mocks/mocks";
 import Image from "next/image";
 
 export function Testimonials() {

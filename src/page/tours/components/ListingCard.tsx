@@ -1,8 +1,8 @@
-import { Difficulty, Tour } from "@/lib/mocks";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/Button";
+import { Button } from "@/components/ui/Button";
 import { ArrowRight, Star } from "lucide-react";
+import { Tour } from "@/types/tour";
 
 export default function ListingCard({ tour }: { tour: Tour }) {
   return (
@@ -63,7 +63,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
   );
 }
 
-function difficultyBadgeClass(d: Difficulty) {
+function difficultyBadgeClass(d: string) {
   switch (d) {
     case "Easy":
       return "bg-secondary text-secondary-foreground";

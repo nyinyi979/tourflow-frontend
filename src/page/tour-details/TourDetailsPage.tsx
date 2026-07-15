@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
 import {
   Star,
@@ -24,14 +24,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/Accordion";
-import { Progress } from "@/components/ui/Progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
-import { getTourById, tours, type Tour } from "@/lib/mocks";
+import { getTourById, tours } from "@/mocks/mocks";
 import Image from "next/image";
-import Link from "next/link";
-import ReviewsSection from "./ReviewSection";
-import RelatedCard from "./TourCard";
+import ReviewsSection from "./components/ReviewSection";
+import RelatedCard from "./components/TourCard";
 
 export default function ActivityDetailsPage({ id }: { id: string }) {
   const tour = getTourById(id);

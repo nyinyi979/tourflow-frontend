@@ -8,73 +8,11 @@ import catAdventure from "@/assets/tour-1.jpeg";
 import catCultural from "@/assets/tour-1.jpeg";
 import catFamily from "@/assets/tour-1.jpeg";
 import catLuxury from "@/assets/tour-1.jpeg";
-import { StaticImageData } from "next/image";
-
-export type Difficulty = "Easy" | "Moderate" | "Challenging";
-export type TourCategory = "Adventure" | "Cultural" | "Family" | "Luxury";
-
-export interface Review {
-  id: string;
-  name: string;
-  avatar: string;
-  date: string;
-  rating: number;
-  comment: string;
-}
-
-export interface ItineraryDay {
-  day: number;
-  title: string;
-  description: string;
-}
-
-export interface Tour {
-  id: string;
-  title: string;
-  description: string;
-  longDescription: string;
-  price: number;
-  duration: number; // days
-  difficulty: Difficulty;
-  category: TourCategory;
-  images: StaticImageData[];
-  capacity: number;
-  rating: number;
-  reviewCount: number;
-  popularity: number;
-  highlights: string[];
-  itinerary: ItineraryDay[];
-  reviews: Review[];
-}
-
-export interface Activity {
-  id: string;
-  title: string;
-  description: string;
-  longDescription?: string;
-  price: number;
-  duration: number; // hours
-  category: string;
-  images: StaticImageData[];
-  rating: number;
-  highlights?: string[];
-  included?: string[];
-  meetingPoint?: string;
-}
-
-export interface Category {
-  slug: string;
-  label: string;
-  image: StaticImageData;
-}
-
-export interface Testimonial {
-  id: string;
-  name: string;
-  avatar: string;
-  quote: string;
-  rating: number;
-}
+import { Review } from "@/types/review";
+import { ItineraryDay, Tour } from "@/types/tour";
+import { Activity } from "@/types/activity";
+import { Testimonial } from "@/types/testimonial";
+import { Category } from "@/types/category";
 
 const sampleHighlights = [
   "Small groups capped at 12 travelers",

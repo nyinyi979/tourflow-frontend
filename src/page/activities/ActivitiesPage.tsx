@@ -1,5 +1,5 @@
 import { ActivityCard } from "@/components/ActivityCard";
-import { activities } from "@/lib/mocks";
+import { activities } from "@/mocks/mocks";
 
 export default function ActivitiesPage() {
   return (

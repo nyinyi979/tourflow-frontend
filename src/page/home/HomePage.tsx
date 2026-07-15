@@ -1,11 +1,11 @@
 import { ArrowRight } from "lucide-react";
-import { Hero } from "@/components/home/Hero";
+import { Hero } from "@/page/home/components/Hero";
 import { SectionHeading } from "@/components/SectionHeading";
 import { TourCard } from "@/components/TourCard";
 import { ActivityCard } from "@/components/ActivityCard";
-import { Testimonials } from "@/components/home/Testimonials";
+import { Testimonials } from "@/page/home/components/Testimonials";
 import { Button } from "@/components/ui/Button";
-import { tours, activities, categories } from "@/lib/mocks";
+import { tours, activities, categories } from "@/mocks/mocks";
 import ctaImg from "@/assets/cta.jpeg";
 import Link from "next/link";
 import Image from "next/image";

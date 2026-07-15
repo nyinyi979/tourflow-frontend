@@ -1,5 +1,5 @@
+import { Tour } from "@/types/tour";
 import { Star } from "lucide-react";
-import type { Tour } from "@/lib/mocks";
 import Image from "next/image";
 
 export function TourCard({ tour }: { tour: Tour }) {

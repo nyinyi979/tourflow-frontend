@@ -25,13 +25,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
-import { tours, type Difficulty } from "@/lib/mocks";
-import ListingCard from "./ListingCard";
-import FilterGroup from "./FilterGroup";
-import CheckRow from "./CheckRow";
+import ListingCard from "./components/ListingCard";
+import FilterGroup from "./components/FilterGroup";
+import CheckRow from "./components/CheckRow";
+import { tours } from "@/mocks/mocks";
 
 const CATEGORIES = ["Adventure", "Cultural", "Family", "Luxury"] as const;
-const DIFFICULTY_LABELS: { label: string; value: Difficulty }[] = [
+const DIFFICULTY_LABELS: { label: string; value: string }[] = [
   { label: "Easy", value: "Easy" },
   { label: "Moderate", value: "Moderate" },
   { label: "Hard", value: "Challenging" },
@@ -54,7 +54,7 @@ const minPrice = Math.min(...tours.map((t) => t.price));
 
 export default function ToursPage() {
   const [cats, setCats] = useState<string[]>([]);
-  const [diffs, setDiffs] = useState<Difficulty[]>([]);
+  const [diffs, setDiffs] = useState<string[]>([]);
   const [durations, setDurations] = useState<string[]>([]);
   const [price, setPrice] = useState<[number, number]>([minPrice, maxPrice]);
   const [sort, setSort] = useState<SortKey>("popularity");

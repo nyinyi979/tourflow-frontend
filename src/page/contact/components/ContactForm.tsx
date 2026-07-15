@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { Label } from "../ui/Label";
-import { Textarea } from "../ui/Textarea";
+import { Button } from "../../../components/ui/Button";
+import { Input } from "../../../components/ui/Input";
+import { Label } from "../../../components/ui/Label";
+import { Textarea } from "../../../components/ui/Textarea";
 
 export default function ContactForm() {
   return (

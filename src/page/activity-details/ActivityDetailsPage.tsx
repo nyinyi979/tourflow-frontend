@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Star, Clock, Check, MapPin, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { getActivityById, activities } from "@/lib/mocks";
+import { getActivityById, activities } from "@/mocks/mocks";
 import Image from "next/image";
 import Link from "next/link";
 

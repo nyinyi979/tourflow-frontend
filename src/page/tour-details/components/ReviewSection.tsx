@@ -1,9 +1,13 @@
-import { Tour } from "@/lib/mocks";
 import { Star } from "lucide-react";
 import { useMemo } from "react";
-import { Progress } from "../ui/Progress";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
+import { Progress } from "../../../components/ui/Progress";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../components/ui/Avatar";
 import { cn } from "@/lib/utils";
+import { Tour } from "@/types/tour";
 
 export default function ReviewsSection({ tour }: { tour: Tour }) {
   const buckets = useMemo(() => {

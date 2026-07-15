@@ -1,4 +1,4 @@
-import { Tour } from "@/lib/mocks";
+import { Tour } from "@/types/tour";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-import RegisterPage from "@/components/register/RegisterPage";
+import RegisterPage from "@/page/register/RegisterPage";
 
 export default function Contact() {
   return <RegisterPage />;

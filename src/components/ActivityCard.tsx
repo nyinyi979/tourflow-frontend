@@ -1,7 +1,7 @@
 import { Star, Clock, ArrowUpRight } from "lucide-react";
-import type { Activity } from "@/lib/mocks";
 import Link from "next/link";
 import Image from "next/image";
+import { Activity } from "@/types/activity";
 
 export function ActivityCard({ activity }: { activity: Activity }) {
   return (
