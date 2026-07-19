@@ -16,11 +16,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Wayfare — Small-group tours and slow travel",
+  title: {
+    default: "TourFlow — Small-group tours and activities",
+    template: "%s | TourFlow",
+  },
   description:
     "Editorial small-group tours and single-day activities in places worth the long way in.",
   openGraph: {
-    title: "Wayfare — Small-group tours and slow travel",
+    title: "TourFlow — Small-group tours and activities",
     description:
       "Editorial small-group tours and single-day activities in places worth the long way in.",
     type: "website",

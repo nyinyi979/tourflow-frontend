@@ -1,5 +1,9 @@
+"use client";
+
 import { Star } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { Progress } from "../../../components/ui/Progress";
 import {
   Avatar,
@@ -8,8 +12,22 @@ import {
 } from "../../../components/ui/Avatar";
 import { cn } from "@/lib/utils";
 import { Tour } from "@/types/tour";
+import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Textarea";
+import { createReview } from "@/services/reviews";
 
 export default function ReviewsSection({ tour }: { tour: Tour }) {
+  const router = useRouter();
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const reviewMutation = useMutation({
+    mutationFn: createReview,
+    onSuccess: () => {
+      setComment("");
+      setRating(5);
+      router.refresh();
+    },
+  });
   const buckets = useMemo(() => {
     const counts = [0, 0, 0, 0, 0];
     tour.reviews.forEach((r) => {
@@ -53,7 +71,63 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
           </div>
         </div>
 
-        <ul className="space-y-8">
+        <div>
+          <form
+            className="mb-10 rounded-lg border border-border/70 bg-card p-5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!comment.trim()) return;
+              reviewMutation.mutate({
+                tourId: tour.id,
+                rating,
+                comment: comment.trim(),
+              });
+            }}
+          >
+            <h3 className="font-display text-xl">Share your experience</h3>
+            <label className="mt-4 block text-sm text-muted-foreground">
+              Rating
+              <select
+                value={rating}
+                onChange={(event) => setRating(Number(event.target.value))}
+                className="ml-3 rounded-md border border-input bg-background px-3 py-2 text-foreground"
+              >
+                {[5, 4, 3, 2, 1].map((value) => (
+                  <option key={value} value={value}>
+                    {value} star{value === 1 ? "" : "s"}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Textarea
+              className="mt-4"
+              rows={4}
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="What stood out about your trip?"
+              required
+            />
+            <div className="mt-4 flex items-center gap-4">
+              <Button type="submit" disabled={reviewMutation.isPending}>
+                {reviewMutation.isPending ? "Submitting…" : "Submit review"}
+              </Button>
+              {reviewMutation.isError && (
+                <p className="text-sm text-destructive">
+                  {reviewMutation.error instanceof Error
+                    ? reviewMutation.error.message
+                    : "Unable to submit review"}
+                </p>
+              )}
+              {reviewMutation.isSuccess && (
+                <p className="text-sm text-primary">Review submitted.</p>
+              )}
+            </div>
+          </form>
+
+          {tour.reviews.length === 0 && (
+            <p className="text-sm text-muted-foreground">No reviews yet.</p>
+          )}
+          <ul className="space-y-8">
           {tour.reviews.map((r) => (
             <li
               key={r.id}
@@ -61,14 +135,14 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
             >
               <div className="flex items-start gap-4">
                 <Avatar className="h-11 w-11">
-                  <AvatarImage src={r.avatar} alt={r.name} />
+                  <AvatarImage src={r.avatar ?? undefined} alt={r.name} />
                   <AvatarFallback>{r.name[0]}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <div className="font-medium text-foreground">{r.name}</div>
                     <div className="text-xs text-muted-foreground">
-                      {r.date}
+                      {new Date(r.date).toLocaleDateString()}
                     </div>
                   </div>
                   <div className="mt-1 flex gap-0.5">
@@ -91,7 +165,8 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               </div>
             </li>
           ))}
-        </ul>
+          </ul>
+        </div>
       </div>
     </section>
   );

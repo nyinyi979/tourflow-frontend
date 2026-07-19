@@ -7,12 +7,15 @@ export default function RelatedCard({ tour }: { tour: Tour }) {
   return (
     <Link href={"/tours/" + tour.id} className="group flex flex-col">
       <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-muted">
-        <Image
-          src={tour.images[0]}
-          alt={tour.title}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        {tour.images[0] && (
+          <Image
+            src={tour.images[0].url}
+            alt={tour.title}
+            fill
+            sizes="(min-width: 768px) 33vw, 100vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
       </div>
       <div className="mt-4 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
         <span>{tour.duration} days</span>

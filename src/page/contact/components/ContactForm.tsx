@@ -28,9 +28,13 @@ export default function ContactForm() {
         <Label htmlFor="message">Message</Label>
         <Textarea id="message" rows={6} />
       </div>
-      <Button type="submit" className="w-full rounded-full">
+      <Button type="submit" className="w-full rounded-full" disabled>
         Send message
       </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        Online messages are not available yet. Please use the email address on
+        this page.
+      </p>
     </form>
   );
 }

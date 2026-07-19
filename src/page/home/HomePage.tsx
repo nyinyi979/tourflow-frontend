@@ -5,12 +5,25 @@ import { TourCard } from "@/components/TourCard";
 import { ActivityCard } from "@/components/ActivityCard";
 import { Testimonials } from "@/page/home/components/Testimonials";
 import { Button } from "@/components/ui/Button";
-import { tours, activities, categories } from "@/mocks/mocks";
 import ctaImg from "@/assets/cta.jpeg";
 import Link from "next/link";
 import Image from "next/image";
+import type { Tour } from "@/types/tour";
+import type { Activity } from "@/types/activity";
+import type { Category } from "@/types/category";
+import type { Testimonial } from "@/types/testimonial";
 
-export default function HomePage() {
+export default function HomePage({
+  tours,
+  activities,
+  categories,
+  testimonials,
+}: {
+  tours: Tour[];
+  activities: Activity[];
+  categories: Category[];
+  testimonials: Testimonial[];
+}) {
   return (
     <>
       <Hero />
@@ -50,21 +63,24 @@ export default function HomePage() {
             title={<>Find your kind of trip.</>}
           />
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-            {categories.map((c, i) => (
+            {categories.slice(0, 4).map((c, i) => (
               <Link
                 key={c.slug}
-                href="/tours"
+                href={`/tours?categoryId=${c.id}`}
                 className={`group relative block overflow-hidden rounded-md ${
                   i % 2 === 1 ? "md:mt-10" : ""
                 }`}
               >
                 <div className="aspect-[3/4]">
-                  <Image
-                    src={c.image}
-                    alt={c.label}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {c.image && (
+                    <Image
+                      src={c.image}
+                      alt={c.label}
+                      fill
+                      sizes="(min-width: 768px) 25vw, 50vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  )}
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
@@ -111,7 +127,7 @@ export default function HomePage() {
           <p className="mb-8 text-xs uppercase tracking-[0.3em] text-primary">
             What travelers say
           </p>
-          <Testimonials />
+          <Testimonials testimonials={testimonials} />
         </div>
       </section>
 

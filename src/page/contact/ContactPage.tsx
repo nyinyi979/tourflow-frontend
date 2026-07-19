@@ -22,7 +22,7 @@ export default function ContactPage() {
               <div className="text-xs uppercase tracking-widest text-foreground">
                 Email
               </div>
-              <p className="mt-1">studio@wayfare.travel</p>
+              <p className="mt-1">hello@tourflow.travel</p>
             </div>
             <div>
               <div className="text-xs uppercase tracking-widest text-foreground">

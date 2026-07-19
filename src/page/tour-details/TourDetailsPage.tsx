@@ -9,7 +9,6 @@ import {
   CalendarIcon,
   Minus,
   Plus,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Calendar } from "@/components/ui/Calendar";
@@ -25,32 +24,38 @@ import {
   AccordionTrigger,
 } from "@/components/ui/Accordion";
 import { cn } from "@/lib/utils";
-import { getTourById, tours } from "@/mocks/mocks";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ReviewsSection from "./components/ReviewSection";
 import RelatedCard from "./components/TourCard";
+import type { Tour } from "@/types/tour";
 
-export default function ActivityDetailsPage({ id }: { id: string }) {
-  const tour = getTourById(id);
+export default function TourDetailsPage({
+  tour,
+  related,
+}: {
+  tour: Tour;
+  related: Tour[];
+}) {
+  const router = useRouter();
   const [activeImg, setActiveImg] = useState(0);
   const [date, setDate] = useState<Date | undefined>();
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
 
-  const total = (tour?.price || 0) * (adults + children * 0.5);
-  const related = tours.filter((t) => t.id !== tour?.id).slice(0, 3);
+  const total = tour.price * (adults + children * 0.5);
 
   const handleBook = () => {
-    // navigate({
-    //   to: "/booking",
-    //   search: {
-    //     tourId: tour.id,
-    //     date: date ? date.toISOString().slice(0, 10) : undefined,
-    //     adults,
-    //     children,
-    //     step: 1,
-    //   },
-    // });
+    if (!date) return;
+    const search = new URLSearchParams({
+      itemType: "tour",
+      itemId: tour.id,
+      date: date.toISOString().slice(0, 10),
+      adults: String(adults),
+      children: String(children),
+      step: "1",
+    });
+    router.push(`/booking?${search}`);
   };
 
   return (
@@ -63,15 +68,17 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
             className="relative aspect-[4/3] overflow-hidden rounded-md bg-muted md:aspect-[16/11]"
           >
             <Image
-              src={tour?.images[activeImg] || "https://placehold.co/600x400"}
-              alt={tour?.title || "title"}
-              className="h-full w-full object-cover"
+              src={tour.images[activeImg]?.url || "https://placehold.co/600x400"}
+              alt={tour.title}
+              fill
+              sizes="(min-width: 768px) 67vw, 100vw"
+              className="object-cover"
             />
           </button>
           <div className="grid grid-cols-4 gap-3 md:grid-cols-2">
-            {tour?.images.slice(0, 4).map((img, i) => (
+            {tour.images.slice(0, 4).map((img, i) => (
               <button
-                key={i}
+                key={img.id}
                 type="button"
                 onClick={() => {
                   setActiveImg(i);
@@ -84,9 +91,11 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
                 )}
               >
                 <Image
-                  src={img}
+                  src={img.url}
                   alt=""
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(min-width: 768px) 17vw, 25vw"
+                  className="object-cover"
                 />
               </button>
             ))}
@@ -98,28 +107,28 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
           <article>
             <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
-                {tour?.category}
+                {tour.category}
               </span>
               <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
-                {tour?.difficulty === "Challenging" ? "Hard" : tour?.difficulty}
+                {tour.difficulty === "Challenging" ? "Hard" : tour.difficulty}
               </span>
               <span className="text-muted-foreground">
-                {tour?.duration} days
+                {tour.duration} days
               </span>
             </div>
             <h1 className="mt-4 font-display text-4xl leading-tight text-foreground md:text-6xl">
-              {tour?.title}
+              {tour.title}
             </h1>
             <div className="mt-4 flex items-center gap-2 text-sm">
               <Star className="h-4 w-4 fill-accent text-accent" />
-              <span className="font-medium">{tour?.rating.toFixed(1)}</span>
+              <span className="font-medium">{tour.rating.toFixed(1)}</span>
               <span className="text-muted-foreground">
-                ({tour?.reviewCount} reviews)
+                ({tour.reviewCount} reviews)
               </span>
             </div>
 
             <p className="mt-8 text-base leading-relaxed text-foreground/90">
-              {tour?.longDescription}
+              {tour.description}
             </p>
 
             <div className="mt-12">
@@ -127,13 +136,13 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
                 Highlights
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">
-                {tour?.highlights.map((h) => (
+                {tour.highlights.map((highlight) => (
                   <li
-                    key={h}
+                    key={highlight.id}
                     className="flex items-start gap-3 text-sm text-foreground/90"
                   >
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {h}
+                    {highlight.label}
                   </li>
                 ))}
               </ul>
@@ -144,8 +153,8 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
                 Day by day
               </h2>
               <Accordion type="single" collapsible className="w-full">
-                {tour?.itinerary.map((d) => (
-                  <AccordionItem key={d.day} value={`d-${d.day}`}>
+                {tour.itinerary.map((d) => (
+                  <AccordionItem key={d.id} value={`d-${d.day}`}>
                     <AccordionTrigger>
                       <span className="font-display text-lg">
                         <span className="mr-4 text-muted-foreground">
@@ -169,7 +178,7 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
               <div className="rounded-lg border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex items-baseline gap-1">
                   <span className="font-display text-3xl text-primary">
-                    ${tour?.price.toLocaleString()}
+                    ${tour.price.toLocaleString()}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     / person
@@ -226,12 +235,12 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
                 <div className="mt-6 space-y-2 border-t border-border/60 pt-4 text-sm">
                   <Row
                     label={`Adults × ${adults}`}
-                    value={`$${(tour?.price || 0 * adults).toLocaleString()}`}
+                    value={`$${(tour.price * adults).toLocaleString()}`}
                   />
                   {children > 0 && (
                     <Row
                       label={`Children × ${children}`}
-                      value={`$${(tour?.price || 0 * children * 0.5).toLocaleString()}`}
+                      value={`$${(tour.price * children * 0.5).toLocaleString()}`}
                     />
                   )}
                   <Row
@@ -245,6 +254,7 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
                   className="mt-6 w-full rounded-full"
                   size="lg"
                   onClick={handleBook}
+                  disabled={!date}
                 >
                   Book now
                 </Button>
@@ -265,7 +275,7 @@ export default function ActivityDetailsPage({ id }: { id: string }) {
         </div>
 
         {/* Reviews */}
-        {tour && <ReviewsSection tour={tour} />}
+        <ReviewsSection tour={tour} />
 
         {/* Related */}
         <div className="mt-24">

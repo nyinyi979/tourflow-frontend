@@ -1,10 +1,14 @@
 "use client";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import {
+  hasCustomerSession,
+  subscribeCustomerSession,
+} from "@/lib/customerAuth";
 
 const links = [
   { href: "/", label: "Home" },
@@ -16,13 +20,19 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const authenticated = useSyncExternalStore(
+    subscribeCustomerSession,
+    hasCustomerSession,
+    () => false,
+  );
   const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auhref flex max-w-7xl items-center justify-between px-5 py-4 md:px-8 md:py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8 md:py-5">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-display text-2xl tracking-tight text-foreground">
-            Wayfare<span className="text-primary">.</span>
+            TourFlow<span className="text-primary">.</span>
           </span>
         </Link>
 
@@ -43,13 +53,15 @@ export function Navbar() {
 
         <div className="hidden md:block">
           <Button asChild variant="default" className="rounded-full px-5">
-            <Link href="/login">Log in</Link>
+            <Link href={authenticated ? "/account" : "/login"}>
+              {authenticated ? "My account" : "Log in"}
+            </Link>
           </Button>
         </div>
 
         <Button
           type="button"
-          aria-label="hrefggle menu"
+          aria-label="Toggle menu"
           className="rounded-md p-2 md:hidden"
           onClick={() => setOpen((o) => !o)}
         >
@@ -71,8 +83,11 @@ export function Navbar() {
               </Link>
             ))}
             <Button asChild className="mt-4 rounded-full">
-              <Link href="/login" onClick={() => setOpen(false)}>
-                Log in
+              <Link
+                href={authenticated ? "/account" : "/login"}
+                onClick={() => setOpen(false)}
+              >
+                {authenticated ? "My account" : "Log in"}
               </Link>
             </Button>
           </nav>

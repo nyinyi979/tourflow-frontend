@@ -28,9 +28,8 @@ import {
 import ListingCard from "./components/ListingCard";
 import FilterGroup from "./components/FilterGroup";
 import CheckRow from "./components/CheckRow";
-import { tours } from "@/mocks/mocks";
-
-const CATEGORIES = ["Adventure", "Cultural", "Family", "Luxury"] as const;
+import type { Tour } from "@/types/tour";
+import type { Category } from "@/types/category";
 const DIFFICULTY_LABELS: { label: string; value: string }[] = [
   { label: "Easy", value: "Easy" },
   { label: "Moderate", value: "Moderate" },
@@ -49,11 +48,27 @@ const DURATION_BUCKETS = [
 type SortKey = "popularity" | "rating" | "price-asc" | "price-desc";
 const PAGE_SIZE = 6;
 
-const maxPrice = Math.max(...tours.map((t) => t.price));
-const minPrice = Math.min(...tours.map((t) => t.price));
-
-export default function ToursPage() {
-  const [cats, setCats] = useState<string[]>([]);
+export default function ToursPage({
+  tours,
+  categories,
+  initialQuery,
+  initialCategoryId,
+}: {
+  tours: Tour[];
+  categories: Category[];
+  initialQuery: string;
+  initialCategoryId?: string;
+}) {
+  const maxPrice = Math.max(0, ...tours.map((tour) => tour.price));
+  const minPrice = tours.length
+    ? Math.min(...tours.map((tour) => tour.price))
+    : 0;
+  const initialCategory = categories.find(
+    (category) => category.id === initialCategoryId,
+  )?.label;
+  const [cats, setCats] = useState<string[]>(
+    initialCategory ? [initialCategory] : [],
+  );
   const [diffs, setDiffs] = useState<string[]>([]);
   const [durations, setDurations] = useState<string[]>([]);
   const [price, setPrice] = useState<[number, number]>([minPrice, maxPrice]);
@@ -62,6 +77,11 @@ export default function ToursPage() {
 
   const filtered = useMemo(() => {
     const list = tours.filter((t) => {
+      if (
+        initialQuery &&
+        !t.title.toLowerCase().includes(initialQuery.toLowerCase())
+      )
+        return false;
       if (cats.length && !cats.includes(t.category)) return false;
       if (diffs.length && !diffs.includes(t.difficulty)) return false;
       if (
@@ -90,7 +110,7 @@ export default function ToursPage() {
         sorted.sort((a, b) => b.popularity - a.popularity);
     }
     return sorted;
-  }, [cats, diffs, durations, price, sort]);
+  }, [cats, diffs, durations, initialQuery, price, sort, tours]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
@@ -105,14 +125,14 @@ export default function ToursPage() {
   const filterPanel = (
     <div className="space-y-8">
       <FilterGroup title="Category">
-        {CATEGORIES.map((c) => (
+        {categories.map((category) => (
           <CheckRow
-            key={c}
-            id={`cat-${c}`}
-            label={c}
-            checked={cats.includes(c)}
+            key={category.id}
+            id={`cat-${category.id}`}
+            label={category.label}
+            checked={cats.includes(category.label)}
             onChange={() => {
-              setCats((s) => toggleFrom(s, c));
+              setCats((current) => toggleFrom(current, category.label));
               setPage(1);
             }}
           />
@@ -126,7 +146,7 @@ export default function ToursPage() {
             max={maxPrice}
             step={50}
             value={price}
-            onValueChange={(v) => {
+            onValueChange={(v: number[]) => {
               setPrice([v[0], v[1]] as [number, number]);
               setPage(1);
             }}
@@ -230,7 +250,10 @@ export default function ToursPage() {
                 </SheetContent>
               </Sheet>
 
-              <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+              <Select
+                value={sort}
+                onValueChange={(v: string) => setSort(v as SortKey)}
+              >
                 <SelectTrigger className="w-[190px] rounded-full">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>

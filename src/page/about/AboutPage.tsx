@@ -9,7 +9,7 @@ export default function AboutPage() {
       </h1>
       <div className="mt-12 space-y-6 text-lg leading-relaxed text-muted-foreground">
         <p>
-          Wayfare is nine people in a converted print shop in Lisbon. We plan
+          TourFlow is nine people in a converted print shop in Lisbon. We plan
           small-group tours and single-day activities in places we know well and
           return to often — the Andes, the High Atlas, coastal Japan.
         </p>
@@ -19,7 +19,7 @@ export default function AboutPage() {
           small (never more than twelve) so nothing feels processed.
         </p>
         <p>
-          If a trip you want isn't listed, write to us. Half of what we do
+          If a trip you want isn&apos;t listed, write to us. Half of what we do
           starts with a good email.
         </p>
       </div>

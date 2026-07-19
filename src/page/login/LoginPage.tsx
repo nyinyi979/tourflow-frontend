@@ -1,25 +1,47 @@
 "use client";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import heroImg from "@/assets/hero.jpeg";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { loginCustomer } from "@/services/auth";
+import { setCustomerToken } from "@/lib/customerAuth";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
   );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const loginMutation = useMutation({
+    mutationFn: loginCustomer,
+    onSuccess: (response) => {
+      setCustomerToken(response.token);
+      queryClient.setQueryData(["customer", "me"], {
+        statusCode: response.statusCode,
+        message: response.message,
+        data: response.customer,
+      });
+      router.replace(searchParams.get("next") || "/account");
+      router.refresh();
+    },
+  });
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const err: typeof errors = {};
     if (!/^\S+@\S+\.\S+$/.test(email)) err.email = "Enter a valid email";
-    if (password.length < 6) err.password = "At least 6 characters";
+    if (!password) err.password = "Password is required";
     setErrors(err);
+    if (!Object.keys(err).length) loginMutation.mutate({ email, password });
   };
 
   return (
@@ -33,10 +55,10 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="relative flex h-full flex-col justify-end p-14">
           <p className="text-xs uppercase tracking-[0.3em] text-white/80">
-            Wayfare
+            TourFlow
           </p>
           <blockquote className="mt-4 max-w-md font-display text-3xl leading-tight text-white md:text-4xl">
-            "The world is a book, and those who do not travel read only a page."
+            &ldquo;The world is a book, and those who do not travel read only a page.&rdquo;
           </blockquote>
           <cite className="mt-4 text-sm not-italic text-white/70">
             — Saint Augustine
@@ -67,15 +89,7 @@ export default function LoginPage() {
               )}
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="text-xs text-muted-foreground hover:text-primary"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -87,12 +101,19 @@ export default function LoginPage() {
                 <p className="text-xs text-destructive">{errors.password}</p>
               )}
             </div>
-            <Button type="submit" size="lg" className="w-full rounded-full">
-              Log in
+            {loginMutation.isError && (
+              <p className="text-sm text-destructive">
+                {loginMutation.error instanceof Error
+                  ? loginMutation.error.message
+                  : "Login failed"}
+              </p>
+            )}
+            <Button type="submit" size="lg" disabled={loginMutation.isPending} className="w-full rounded-full">
+              {loginMutation.isPending ? "Logging in…" : "Log in"}
             </Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="text-primary hover:underline">
               Register
             </Link>

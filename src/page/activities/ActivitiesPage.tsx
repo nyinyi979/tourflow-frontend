@@ -1,7 +1,7 @@
 import { ActivityCard } from "@/components/ActivityCard";
-import { activities } from "@/mocks/mocks";
+import type { Activity } from "@/types/activity";
 
-export default function ActivitiesPage() {
+export default function ActivitiesPage({ activities }: { activities: Activity[] }) {
   return (
     <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
       <p className="mb-4 text-xs uppercase tracking-[0.3em] text-primary">
@@ -15,6 +15,11 @@ export default function ActivitiesPage() {
           <ActivityCard key={a.id} activity={a} />
         ))}
       </div>
+      {activities.length === 0 && (
+        <p className="mt-16 text-sm text-muted-foreground">
+          No activities are available yet.
+        </p>
+      )}
     </section>
   );
 }

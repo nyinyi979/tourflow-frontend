@@ -34,12 +34,13 @@ export function ActivityCard({ activity }: { activity: Activity }) {
         </p>
       </div>
       <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-muted sm:aspect-square sm:w-40 md:w-56">
-        <Image
-          src={activity.images[0]}
+        {activity.images[0] && <Image
+          src={activity.images[0].url}
           alt={activity.title}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+          fill
+          sizes="(min-width: 768px) 14rem, 100vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+        />}
       </div>
     </Link>
   );

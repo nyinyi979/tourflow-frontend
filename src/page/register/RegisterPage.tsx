@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import heroImg from "@/assets/hero.jpeg";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { signupCustomer } from "@/services/auth";
 
 type Form = {
   name: string;
@@ -15,6 +18,7 @@ type Form = {
 };
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState<Form>({
     name: "",
     email: "",
@@ -22,6 +26,10 @@ export default function RegisterPage() {
     confirm: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
+  const signupMutation = useMutation({
+    mutationFn: signupCustomer,
+    onSuccess: () => router.push("/login?registered=1"),
+  });
 
   const update = (k: keyof Form, v: string) => setForm({ ...form, [k]: v });
 
@@ -30,9 +38,16 @@ export default function RegisterPage() {
     const err: Partial<Record<keyof Form, string>> = {};
     if (!form.name.trim()) err.name = "Required";
     if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Enter a valid email";
-    if (form.password.length < 6) err.password = "At least 6 characters";
+    if (form.password.length < 8) err.password = "At least 8 characters";
     if (form.password !== form.confirm) err.confirm = "Passwords don't match";
     setErrors(err);
+    if (!Object.keys(err).length) {
+      signupMutation.mutate({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+      });
+    }
   };
 
   return (
@@ -46,10 +61,10 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="relative flex h-full flex-col justify-end p-14">
           <p className="text-xs uppercase tracking-[0.3em] text-white/80">
-            Wayfare
+            TourFlow
           </p>
           <blockquote className="mt-4 max-w-md font-display text-3xl leading-tight text-white md:text-4xl">
-            "Travel is the only thing you buy that makes you richer."
+            &ldquo;Travel is the only thing you buy that makes you richer.&rdquo;
           </blockquote>
           <cite className="mt-4 text-sm not-italic text-white/70">
             — Anonymous
@@ -97,8 +112,15 @@ export default function RegisterPage() {
               onChange={(v) => update("confirm", v)}
               error={errors.confirm}
             />
-            <Button type="submit" size="lg" className="w-full rounded-full">
-              Create account
+            {signupMutation.isError && (
+              <p className="text-sm text-destructive">
+                {signupMutation.error instanceof Error
+                  ? signupMutation.error.message
+                  : "Unable to create account"}
+              </p>
+            )}
+            <Button type="submit" size="lg" disabled={signupMutation.isPending} className="w-full rounded-full">
+              {signupMutation.isPending ? "Creating account…" : "Create account"}
             </Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">

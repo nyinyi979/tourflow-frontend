@@ -2,11 +2,11 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Wayfare About — Register An Account",
+  title: "Create an account",
   description:
     "Editorial small-group tours and single-day activities in places worth the long way in.",
   openGraph: {
-    title: "Wayfare — Small-group tours and slow travel",
+    title: "Create an account | TourFlow",
     description:
       "Editorial small-group tours and single-day activities in places worth the long way in.",
     type: "website",

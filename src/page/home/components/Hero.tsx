@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import heroImg from "@/assets/hero.jpeg";
+import { useRouter } from "next/navigation";
 
 export function Hero() {
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(2);
+  const router = useRouter();
 
   return (
     <section className="relative isolate overflow-hidden bg-ink">
@@ -38,7 +40,11 @@ export function Hero() {
         </div>
 
         <form
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const query = destination.trim();
+            router.push(query ? `/tours?query=${encodeURIComponent(query)}` : "/tours");
+          }}
           className="mt-10 grid gap-3 rounded-2xl bg-background/95 p-3 shadow-2xl backdrop-blur md:mt-14 md:max-w-4xl md:grid-cols-[1.4fr_1fr_1fr_auto] md:gap-2 md:p-2"
         >
           <Field icon={<MapPin className="h-4 w-4" />} label="Destination">

@@ -1,15 +1,19 @@
 "use client";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { testimonials } from "@/mocks/mocks";
 import Image from "next/image";
+import type { Testimonial } from "@/types/testimonial";
 
-export function Testimonials() {
+export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
   const [i, setI] = useState(0);
   const t = testimonials[i];
   const prev = () =>
     setI((n) => (n - 1 + testimonials.length) % testimonials.length);
   const next = () => setI((n) => (n + 1) % testimonials.length);
+
+  if (!t) {
+    return <p className="text-sm text-muted-foreground">No testimonials yet.</p>;
+  }
 
   return (
     <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
@@ -20,14 +24,19 @@ export function Testimonials() {
           <span className="text-accent">”</span>
         </p>
         <footer className="mt-8 flex items-center gap-4">
-          <Image
-            src={t.avatar}
-            alt={t.name}
-            width={48}
-            height={48}
-            loading="lazy"
-            className="h-12 w-12 rounded-full object-cover"
-          />
+          {t.avatar ? (
+            <Image
+              src={t.avatar}
+              alt={t.name}
+              width={48}
+              height={48}
+              className="h-12 w-12 rounded-full object-cover"
+            />
+          ) : (
+            <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary font-medium">
+              {t.name.charAt(0)}
+            </div>
+          )}
           <div>
             <div className="font-medium text-foreground">{t.name}</div>
             <div className="mt-1 flex gap-0.5">
