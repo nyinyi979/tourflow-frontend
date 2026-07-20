@@ -1,137 +1,119 @@
-# TourFlow — Frontend
+# TourFlow frontend
 
-Customer-facing web application for TourFlow, a full-stack tour and travel booking platform. Browse tour packages and activities, search by destination, book with Stripe payments, and manage bookings from a personal dashboard.
-
-**Live demo:** _coming soon_  
-**Backend repo:** [tourflow-api](https://github.com/[your-org]/tourflow-api)
-
----
+Customer-facing application for TourFlow. Customers can browse tours and
+activities, create bookings, submit tour reviews, and manage their bookings.
 
 ## Stack
 
-- **Framework** — Next.js 15 (App Router)
-- **Language** — TypeScript
-- **Styling** — Tailwind CSS
-- **State** — Zustand
-- **Data fetching** — TanStack Query
-- **Forms** — React Hook Form + Zod
-- **Animations** — Framer Motion
-- **Payments** — Stripe.js
+- Next.js 16 with the App Router
+- React 19 and TypeScript
+- Tailwind CSS 4
+- TanStack Query for authenticated client-side data
+- shadcn/ui primitives
 
----
+Public catalog and detail pages are rendered on the server. Authentication and
+customer-specific requests use TanStack Query in client components because the
+customer token is stored in the browser.
 
 ## Features
 
-- Tour and activity listing with filters (category, price, duration, difficulty)
-- Tour detail page with image gallery, itinerary, availability calendar, and sticky booking sidebar
-- Multi-step checkout flow — guest details → Stripe payment → confirmation
-- User authentication (register, login, JWT)
-- Personal dashboard — upcoming and past bookings with status tracking
-- Search across tours and activities by destination and date
-- Category pages and review sections per tour
-- Fully responsive, mobile-first
+- Server-rendered tour and activity catalogs
+- URL-based search, category filtering, sorting, and pagination
+- Tour and activity detail pages with dynamic metadata
+- Customer registration, login, and session handling
+- Tour and activity booking with confirmation details
+- Customer account and booking cancellation
+- Tour reviews, categories, and testimonials
+- Responsive layouts and optimized remote images
 
----
+## Getting started
 
-## Getting Started
+### Requirements
 
-### Prerequisites
-
-- Node.js 18+
+- Node.js 20.9 or newer
 - npm
-- A running instance of [tourflow-api](https://github.com/[your-org]/tourflow-api)
+- A running TourFlow API
 
-### Installation
+Install dependencies:
 
 ```bash
-git clone https://github.com/[your-org]/tourflow-frontend.git
-cd tourflow-frontend
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env.local` file in the root:
+Create `.env.local` in the project root:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
+NEXT_PUBLIC_FETCH_URL=http://127.0.0.1:7000
 ```
 
-| Variable | Description |
-|---|---|
-| `NEXT_PUBLIC_API_URL` | Base URL of the TourFlow backend API |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key for payment UI |
+`NEXT_PUBLIC_FETCH_URL` must be the base URL of the TourFlow API without a
+trailing endpoint path.
 
-### Development
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-App runs at [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
 
-### Build
+## Commands
 
 ```bash
-npm run build
-npm start
+npm run dev       # Start the development server
+npm run lint      # Run ESLint
+npx tsc --noEmit  # Check TypeScript
+npm run build     # Create a production build
+npm start         # Run the production build
 ```
 
----
+## Project structure
 
-## Project Structure
-
-```
+```text
 src/
-├── app/                  # Next.js App Router pages
-│   ├── (auth)/           # Login and register pages
-│   ├── tours/            # Tour listing and detail pages
-│   ├── activities/       # Activity listing and detail pages
-│   ├── booking/          # Checkout flow and confirmation
-│   ├── search/           # Search results page
-│   ├── profile/          # User dashboard and bookings
-│   └── categories/       # Category landing pages
-├── components/           # Shared UI components
-│   ├── ui/               # Base components (buttons, inputs, cards)
-│   ├── tours/            # Tour-specific components
-│   ├── booking/          # Checkout step components
-│   └── layout/           # Header, footer, nav
-├── hooks/                # Custom React hooks
-├── lib/                  # API client, auth helpers, utils
-├── stores/               # Zustand stores
-└── types/                # TypeScript types and interfaces
+├── app/                # Next.js routes, layouts, and route metadata
+├── assets/             # Images bundled by Next.js
+├── components/         # Shared application and UI components
+│   └── ui/             # shadcn/ui primitives (lowercase filenames)
+├── features/           # Feature-owned UI, API functions, types, and queries
+│   ├── activities/
+│   ├── auth/
+│   ├── bookings/
+│   ├── categories/
+│   ├── tours/
+│   └── ...
+└── lib/                # Shared API client, session helpers, and utilities
 ```
 
----
+Route files in `src/app` should stay small. Feature behavior belongs in the
+corresponding folder under `src/features`, while reusable primitives belong in
+`src/components` or `src/lib`.
 
-## Pages
+## Routes
 
 | Route | Description |
-|---|---|
-| `/` | Home — featured tours, activities, categories, testimonials |
-| `/tours` | Tour listing with filter sidebar and sort |
-| `/tours/[slug]` | Tour detail — gallery, itinerary, booking sidebar, reviews |
-| `/activities` | Activity listing |
-| `/activities/[slug]` | Activity detail |
-| `/categories/[slug]` | Category landing page |
-| `/search` | Search results for tours and activities |
-| `/booking` | Multi-step checkout flow |
-| `/booking/confirmation` | Booking confirmation with reference number |
-| `/login` | Login |
-| `/register` | Register |
-| `/profile` | User profile and booking history |
+| --- | --- |
+| `/` | Featured tours, activities, categories, and testimonials |
+| `/tours` | Paginated tour catalog with filters and sorting |
+| `/tours/[id]` | Tour details, booking controls, and reviews |
+| `/activities` | Paginated activity catalog with filters and sorting |
+| `/activities/[id]` | Activity details and booking controls |
+| `/booking` | Booking form for a selected tour or activity |
+| `/booking/confirmation` | Booking confirmation and reference number |
+| `/account` | Customer details and booking history |
+| `/login` | Customer login |
+| `/register` | Customer registration |
+| `/about` | About TourFlow |
+| `/contact` | Contact information |
 
----
+Catalog URLs use one-based page numbers for customers. The API request adapters
+convert them to the API's zero-based pagination internally.
 
-## Deployment
+## API errors and authentication
 
-The frontend is deployed on [Vercel](https://vercel.com). Push to `main` triggers an automatic deployment.
+All requests go through `src/lib/api/client.ts`. Authenticated requests attach
+the customer token using the `x-access-token` header. A `401` response clears the
+local session and redirects the customer to login while preserving the intended
+destination.
 
-Set the same environment variables in your Vercel project settings under **Settings → Environment Variables**.
-
----
-
-## Related
-
-- [tourflow-api](https://github.com/[your-org]/tourflow-api) — Fastify + PostgreSQL backend
+Do not commit `.env.local` or other environment files.

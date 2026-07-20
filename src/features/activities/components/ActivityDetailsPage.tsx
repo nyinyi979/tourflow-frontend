@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Star, Clock, Check, MapPin, ShieldCheck, Users } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";

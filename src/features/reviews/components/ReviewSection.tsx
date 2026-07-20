@@ -4,16 +4,16 @@ import { Star } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/Progress";
+import { Progress } from "@/components/ui/progress";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/Avatar";
+} from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { Tour } from "@/features/tours/types";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Textarea";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { createReview } from "../api";
 
 export default function ReviewsSection({ tour }: { tour: Tour }) {

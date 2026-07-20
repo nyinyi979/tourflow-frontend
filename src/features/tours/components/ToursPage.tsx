@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { CatalogPagination } from "@/components/CatalogPagination";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { Category } from "@/features/categories/types";
 import type { Tour } from "../types";
 import ListingCard from "./ListingCard";

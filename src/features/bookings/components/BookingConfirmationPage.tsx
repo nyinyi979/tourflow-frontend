@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { bookingDetailQueryOptions } from "../queries";
 
 export default function BookingConfirmationPage() {

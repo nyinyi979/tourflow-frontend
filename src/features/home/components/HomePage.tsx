@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { TourCard } from "@/features/tours/components/TourCard";
 import { ActivityCard } from "@/features/activities/components/ActivityCard";
 import { Testimonials } from "@/features/testimonials/components/Testimonials";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import ctaImg from "@/assets/cta.jpeg";
 import Link from "next/link";
 import Image from "next/image";

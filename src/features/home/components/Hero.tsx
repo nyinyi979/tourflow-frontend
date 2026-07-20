@@ -1,7 +1,7 @@
 "use client";
 import { Search, MapPin, CalendarDays, Users } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import heroImg from "@/assets/hero.jpeg";
 import { useRouter } from "next/navigation";
