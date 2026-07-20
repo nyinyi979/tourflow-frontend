@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
-import TourDetailsPage from "@/page/tour-details/TourDetailsPage";
-import { ApiError } from "@/services/api";
-import { getTourById, getTours } from "@/services/catalog";
+import TourDetailsPage from "@/features/tours/components/TourDetailsPage";
+import { ApiError } from "@/lib/api/client";
+import { getTourById, getTours } from "@/features/tours/api";
 
 export const dynamic = "force-dynamic";
 

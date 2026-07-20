@@ -1,4 +1,4 @@
-import AboutPage from "@/page/about/AboutPage";
+import AboutPage from "@/features/about/components/AboutPage";
 
 export default function Activities() {
   return <AboutPage />;

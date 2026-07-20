@@ -1,23 +1,24 @@
 import { notFound } from "next/navigation";
-import BookingPage from "@/page/booking/BookingPage";
-import { ApiError } from "@/services/api";
-import { getActivityById, getTourById } from "@/services/catalog";
-import type { BookableItem } from "@/types/booking";
+import BookingPage from "@/features/bookings/components/BookingPage";
+import { ApiError } from "@/lib/api/client";
+import { getActivityById } from "@/features/activities/api";
+import { getTourById } from "@/features/tours/api";
+import type { BookableItem } from "@/features/bookings/types";
+import { getSearchParam, type SearchParams } from "@/lib/searchParams";
 
 export const dynamic = "force-dynamic";
 
 export default async function Booking({
   searchParams,
 }: {
-  searchParams: Promise<{
-    itemType?: string;
-    itemId?: string;
-    date?: string;
-    adults?: string;
-    children?: string;
-  }>;
+  searchParams: Promise<SearchParams>;
 }) {
-  const { itemType, itemId, date, adults, children } = await searchParams;
+  const params = await searchParams;
+  const itemType = getSearchParam(params, "itemType");
+  const itemId = getSearchParam(params, "itemId");
+  const date = getSearchParam(params, "date");
+  const adults = getSearchParam(params, "adults");
+  const children = getSearchParam(params, "children");
   const adultCount = Math.max(1, Number(adults || 1));
   const childCount = Math.max(0, Number(children || 0));
   if (

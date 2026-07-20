@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import BookingConfirmationPage from "@/page/booking/BookingConfirmPage";
+import BookingConfirmationPage from "@/features/bookings/components/BookingConfirmationPage";
 
 export default function BookingConfirmation() {
   return (

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
-import ActivityDetailsPage from "@/page/activity-details/ActivityDetailsPage";
-import { ApiError } from "@/services/api";
-import { getActivities, getActivityById } from "@/services/catalog";
+import ActivityDetailsPage from "@/features/activities/components/ActivityDetailsPage";
+import { ApiError } from "@/lib/api/client";
+import { getActivities, getActivityById } from "@/features/activities/api";
 
 export const dynamic = "force-dynamic";
 

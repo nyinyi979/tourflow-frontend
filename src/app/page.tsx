@@ -1,10 +1,8 @@
-import HomePage from "@/page/home/HomePage";
-import {
-  getActivities,
-  getCategories,
-  getTestimonials,
-  getTours,
-} from "@/services/catalog";
+import HomePage from "@/features/home/components/HomePage";
+import { getActivities } from "@/features/activities/api";
+import { getCategories } from "@/features/categories/api";
+import { getTestimonials } from "@/features/testimonials/api";
+import { getTours } from "@/features/tours/api";
 
 export const dynamic = "force-dynamic";
 
