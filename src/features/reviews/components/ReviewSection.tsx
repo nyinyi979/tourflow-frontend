@@ -3,7 +3,7 @@
 import { Star } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { Progress } from "@/components/ui/progress";
 import {
   Avatar,
@@ -135,14 +135,19 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
             >
               <div className="flex items-start gap-4">
                 <Avatar className="h-11 w-11">
-                  <AvatarImage src={r.avatar ?? undefined} alt={r.name} />
-                  <AvatarFallback>{r.name[0]}</AvatarFallback>
+                  <AvatarImage
+                    src={r.avatar ?? undefined}
+                    alt={r.customerName}
+                  />
+                  <AvatarFallback>{r.customerName[0]}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <div className="font-medium text-foreground">{r.name}</div>
+                    <div className="font-medium text-foreground">
+                      {r.customerName}
+                    </div>
                     <div className="text-xs text-muted-foreground">
-                      {new Date(r.date).toLocaleDateString()}
+                      {new Date(r.reviewedAt).toLocaleDateString()}
                     </div>
                   </div>
                   <div className="mt-1 flex gap-0.5">

@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import heroImg from "@/assets/hero.jpeg";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { signupCustomer } from "../api";
+import { getAuthPath, getSafeNextPath } from "@/lib/redirects";
 
 type Form = {
   name: string;
@@ -19,6 +21,8 @@ type Form = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = getSafeNextPath(searchParams.get("next"), "/account");
   const [form, setForm] = useState<Form>({
     name: "",
     email: "",
@@ -28,7 +32,13 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const signupMutation = useMutation({
     mutationFn: signupCustomer,
-    onSuccess: () => router.push("/login?registered=1"),
+    onSuccess: () => {
+      const loginPath = new URLSearchParams({
+        registered: "1",
+        next: nextPath,
+      });
+      router.push(`/login?${loginPath.toString()}`);
+    },
   });
 
   const update = (k: keyof Form, v: string) => setForm({ ...form, [k]: v });
@@ -125,7 +135,10 @@ export default function RegisterPage() {
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link
+              href={getAuthPath("/login", nextPath)}
+              className="text-primary hover:underline"
+            >
               Log in
             </Link>
           </p>

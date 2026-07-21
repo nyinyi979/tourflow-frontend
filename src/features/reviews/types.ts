@@ -2,9 +2,9 @@ import type { DataResponse } from "@/lib/api/types";
 
 export interface PublicReview {
   id: string;
-  name: string;
+  customerName: string;
   avatar: string | null;
-  date: string;
+  reviewedAt: string;
   rating: number;
   comment: string;
 }

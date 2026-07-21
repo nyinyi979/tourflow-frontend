@@ -15,12 +15,15 @@ interface ApiRequest extends Omit<RequestInit, "body"> {
   query?: object;
   body?: unknown;
   authenticated?: boolean;
+  unauthorizedPath?: "/login" | "/register";
 }
 
 const getApiBaseUrl = () => {
   const value = process.env.NEXT_PUBLIC_FETCH_URL;
   if (!value) throw new Error("NEXT_PUBLIC_FETCH_URL is not configured");
-  return value.replace(/\/$/, "");
+  const url = new URL(value);
+  if (url.pathname === "/") url.pathname = "/api";
+  return url.toString().replace(/\/$/, "");
 };
 
 export const apiFetch = async <T>({
@@ -28,6 +31,7 @@ export const apiFetch = async <T>({
   query,
   body,
   authenticated,
+  unauthorizedPath = "/login",
   ...init
 }: ApiRequest): Promise<T> => {
   const url = new URL(`${getApiBaseUrl()}/${endpoint.replace(/^\//, "")}`);
@@ -56,7 +60,9 @@ export const apiFetch = async <T>({
     if (response.status === 401 && typeof window !== "undefined") {
       clearCustomerSession();
       const next = `${window.location.pathname}${window.location.search}`;
-      window.location.assign(`/login?next=${encodeURIComponent(next)}`);
+      window.location.assign(
+        `${unauthorizedPath}?next=${encodeURIComponent(next)}`,
+      );
     }
     throw new ApiError(
       result?.message ?? `Request failed with status ${response.status}`,

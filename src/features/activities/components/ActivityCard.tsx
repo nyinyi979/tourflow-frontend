@@ -11,7 +11,7 @@ export function ActivityCard({ activity }: { activity: Activity }) {
     >
       <div className="min-w-0">
         <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-muted-foreground">
-          <span>{activity.category}</span>
+          <span>{activity.category.label}</span>
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
             {activity.duration}h
@@ -33,7 +33,7 @@ export function ActivityCard({ activity }: { activity: Activity }) {
           <span className="text-muted-foreground"> / person</span>
         </p>
       </div>
-      <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-muted sm:aspect-square sm:w-40 md:w-56">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-muted sm:aspect-square sm:w-40 md:w-56">
         {activity.images[0] && <Image
           src={activity.images[0].url}
           alt={activity.title}

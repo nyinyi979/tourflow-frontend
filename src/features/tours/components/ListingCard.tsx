@@ -21,7 +21,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
           />
         )}
         <div className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs uppercase tracking-widest text-foreground backdrop-blur">
-          {tour.category}
+          {tour.category.label}
         </div>
       </Link>
       <div className="mt-5 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">

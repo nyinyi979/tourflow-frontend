@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import ReviewsSection from "@/features/reviews/components/ReviewSection";
 import RelatedCard from "./RelatedTourCard";
 import type { Tour } from "../types";
@@ -107,7 +107,7 @@ export default function TourDetailsPage({
           <article>
             <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
-                {tour.category}
+                {tour.category.label}
               </span>
               <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
                 {tour.difficulty === "Challenging" ? "Hard" : tour.difficulty}

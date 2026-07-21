@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import type { Activity } from "../types";
 
 export default function ActivityDetailPage({
@@ -89,7 +89,7 @@ export default function ActivityDetailPage({
           <article>
             <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
-                {activity.category}
+                {activity.category.label}
               </span>
               <span className="flex items-center gap-1 text-muted-foreground">
                 <Clock className="h-3.5 w-3.5" />

@@ -31,7 +31,7 @@ export interface Tour {
   duration: number;
   difficulty: string;
   categoryId: string;
-  category: string;
+  category: { label: string };
   capacity: number;
   rating: number;
   reviewCount: number;

@@ -42,7 +42,7 @@ export default async function Booking({
         image: tour.images[0]?.url ?? null,
         price: tour.price,
         duration: tour.duration,
-        category: tour.category,
+        category: tour.category.label,
       };
     } else {
       const activity = (await getActivityById(itemId)).data;
@@ -53,7 +53,7 @@ export default async function Booking({
         image: activity.images[0]?.url ?? null,
         price: activity.price,
         duration: activity.duration,
-        category: activity.category,
+        category: activity.category.label,
       };
     }
   } catch (error) {

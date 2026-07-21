@@ -7,14 +7,17 @@ import { Label } from "@/components/ui/label";
 import heroImg from "@/assets/hero.jpeg";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { loginCustomer } from "../api";
 import { customerKeys } from "../queries";
 import { setCustomerToken } from "@/lib/customerAuth";
+import { getAuthPath, getSafeNextPath } from "@/lib/redirects";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const nextPath = getSafeNextPath(searchParams.get("next"), "/account");
   const queryClient = useQueryClient();
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
@@ -31,7 +34,7 @@ export default function LoginPage() {
         message: response.message,
         data: response.customer,
       });
-      router.replace(searchParams.get("next") || "/account");
+      router.replace(nextPath);
       router.refresh();
     },
   });
@@ -115,7 +118,10 @@ export default function LoginPage() {
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link
+              href={getAuthPath("/register", nextPath)}
+              className="text-primary hover:underline"
+            >
               Register
             </Link>
           </p>

@@ -2,6 +2,7 @@ import {
   BookingListResponse,
   BookingResponse,
   CreateBookingRequest,
+  PayBookingRequest,
   UpdateBookingRequest,
 } from "./types";
 import { apiFetch } from "@/lib/api/client";
@@ -11,6 +12,7 @@ export const createBooking = (body: CreateBookingRequest) =>
     endpoint: "booking",
     method: "POST",
     authenticated: true,
+    unauthorizedPath: "/register",
     body,
   });
 
@@ -31,6 +33,14 @@ export const updateBooking = (id: string, body: UpdateBookingRequest) =>
   apiFetch<BookingResponse>({
     endpoint: `booking/${id}`,
     method: "PUT",
+    authenticated: true,
+    body,
+  });
+
+export const payBooking = (id: string, body: PayBookingRequest) =>
+  apiFetch<BookingResponse>({
+    endpoint: `booking/${id}/payment`,
+    method: "POST",
     authenticated: true,
     body,
   });

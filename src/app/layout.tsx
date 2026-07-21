@@ -4,6 +4,7 @@ import { Fraunces, Inter } from "next/font/google";
 import Providers from "./providers";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import NextTopLoader from "nextjs-toploader";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fraunces.variable} ${inter.variable}`}>
+        <NextTopLoader color="#b56b45" height={3} showSpinner={false} />
         <Navbar />
         <Providers>{children}</Providers>
         <Footer />

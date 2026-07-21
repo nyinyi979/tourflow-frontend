@@ -23,7 +23,7 @@ export interface Activity {
   price: number;
   duration: number;
   categoryId: string;
-  category: string;
+  category: { label: string };
   rating: number;
   meetingPoint: string | null;
   images: ActivityImage[];

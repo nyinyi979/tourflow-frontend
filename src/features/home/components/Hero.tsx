@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import heroImg from "@/assets/hero.jpeg";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 export function Hero() {
   const [destination, setDestination] = useState("");
@@ -17,9 +17,10 @@ export function Hero() {
       <Image
         src={heroImg}
         alt="Traveler above misty valleys at sunrise"
-        width={1920}
-        height={1280}
-        className="absolute inset-0 h-full w-full object-cover opacity-90"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover opacity-90"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
 

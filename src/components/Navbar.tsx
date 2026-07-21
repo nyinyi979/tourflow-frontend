@@ -51,7 +51,15 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-5 md:flex">
+          {authenticated && (
+            <Link
+              href="/bookings"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              My bookings
+            </Link>
+          )}
           <Button asChild variant="default" className="rounded-full px-5">
             <Link href={authenticated ? "/account" : "/login"}>
               {authenticated ? "My account" : "Log in"}
@@ -82,6 +90,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            {authenticated && (
+              <Link
+                href="/bookings"
+                onClick={() => setOpen(false)}
+                className="border-b border-border/40 py-3 text-sm text-foreground"
+              >
+                My bookings
+              </Link>
+            )}
             <Button asChild className="mt-4 rounded-full">
               <Link
                 href={authenticated ? "/account" : "/login"}

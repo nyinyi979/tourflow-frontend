@@ -14,15 +14,15 @@ import type { Category } from "@/features/categories/types";
 import type { Testimonial } from "@/features/testimonials/types";
 
 export default function HomePage({
-  tours,
-  activities,
-  categories,
-  testimonials,
+  tours = [],
+  activities = [],
+  categories = [],
+  testimonials= [],
 }: {
-  tours: Tour[];
-  activities: Activity[];
-  categories: Category[];
-  testimonials: Testimonial[];
+  tours?: Tour[];
+  activities?: Activity[];
+  categories?: Category[];
+  testimonials?: Testimonial[];
 }) {
   return (
     <>
@@ -71,7 +71,7 @@ export default function HomePage({
                   i % 2 === 1 ? "md:mt-10" : ""
                 }`}
               >
-                <div className="aspect-[3/4]">
+                <div className="relative aspect-[3/4]">
                   {c.image && (
                     <Image
                       src={c.image}
@@ -136,8 +136,10 @@ export default function HomePage({
         <Image
           src={ctaImg}
           alt="Open road through volcanic landscape"
+          fill
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/30" />
         <div className="relative mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-40">

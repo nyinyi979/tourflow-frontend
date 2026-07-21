@@ -3,8 +3,10 @@
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { Button } from "@/components/ui/button";
+import { hasCustomerSession } from "@/lib/customerAuth";
+import { getAuthPath } from "@/lib/redirects";
 import { createBooking } from "../api";
 import type { BookableItem, CreateBookingRequest } from "../types";
 
@@ -28,10 +30,16 @@ export default function BookingPage({
   const bookingMutation = useMutation({
     mutationFn: createBooking,
     onSuccess: (response) =>
-      router.replace(`/booking/confirmation?id=${response.data.id}`),
+      router.push(`/booking/payment?id=${response.data.id}`),
   });
 
   const confirmBooking = () => {
+    if (!hasCustomerSession()) {
+      const next = `${window.location.pathname}${window.location.search}`;
+      router.push(getAuthPath("/register", next));
+      return;
+    }
+
     const common = { travelDate: date, adults, children: childCount };
     const request: CreateBookingRequest =
       item.itemType === "tour"
@@ -82,8 +90,8 @@ export default function BookingPage({
             price={item.price}
           />
           <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-            Confirming creates the booking in your TourFlow account. You will be
-            asked to log in if your session has expired.
+            Continue to the secure payment step. New customers will be asked to
+            create an account first.
           </p>
           <Button
             size="lg"
@@ -92,8 +100,8 @@ export default function BookingPage({
             disabled={bookingMutation.isPending}
           >
             {bookingMutation.isPending
-              ? "Confirming…"
-              : `Confirm booking · $${subtotal.toLocaleString()}`}
+              ? "Creating booking…"
+              : `Continue to payment · $${subtotal.toLocaleString()}`}
           </Button>
           {bookingMutation.isError && (
             <p className="mt-3 text-sm text-destructive">
