@@ -23,6 +23,17 @@ export const metadata: Metadata = {
   },
   description:
     "Editorial small-group tours and single-day activities in places worth the long way in.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "TourFlow — Small-group tours and activities",
     description:

@@ -1,12 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Star, Clock, Check, MapPin, ShieldCheck, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Star, Clock, Check, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "nextjs-toploader/app";
+import ActivityBookingCard from "./ActivityBookingCard";
 import type { Activity } from "../types";
 
 export default function ActivityDetailPage({
@@ -16,24 +14,7 @@ export default function ActivityDetailPage({
   activity: Activity;
   related: Activity[];
 }) {
-  const router = useRouter();
   const [activeImg, setActiveImg] = useState(0);
-  const [guests, setGuests] = useState(2);
-  const [date, setDate] = useState("");
-  const total = activity.price * guests;
-
-  const reserve = () => {
-    if (!date) return;
-    const search = new URLSearchParams({
-      itemType: "activity",
-      itemId: activity.id,
-      date,
-      adults: String(guests),
-      children: "0",
-      step: "1",
-    });
-    router.push(`/booking?${search}`);
-  };
 
   return (
     <>
@@ -164,86 +145,7 @@ export default function ActivityDetailPage({
             )}
           </article>
 
-          <aside>
-            <div className="lg:sticky lg:top-28">
-              <div className="rounded-lg border border-border/70 bg-card p-6 shadow-sm">
-                <div className="flex items-baseline gap-1">
-                  <span className="font-display text-3xl text-primary">
-                    ${activity.price}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    / person
-                  </span>
-                </div>
-
-                <div className="mt-6">
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-                    Date
-                  </label>
-                  <Input
-                    type="date"
-                    min={new Date().toISOString().slice(0, 10)}
-                    value={date}
-                    onChange={(event) => setDate(event.target.value)}
-                  />
-                </div>
-
-                <div className="mt-6">
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-                    Guests
-                  </label>
-                  <div className="flex items-center justify-between rounded-md border border-input px-3 py-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      {guests} {guests === 1 ? "person" : "people"}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="outline"
-                        className="h-7 w-7 rounded-full"
-                        onClick={() => setGuests(Math.max(1, guests - 1))}
-                        disabled={guests <= 1}
-                      >
-                        −
-                      </Button>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="outline"
-                        className="h-7 w-7 rounded-full"
-                        onClick={() => setGuests(guests + 1)}
-                      >
-                        +
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4 text-base">
-                  <span className="font-medium">Total</span>
-                  <span className="font-display text-xl">
-                    ${total.toLocaleString()}
-                  </span>
-                </div>
-
-                <Button
-                  className="mt-6 w-full rounded-full"
-                  size="lg"
-                  disabled={!date}
-                  onClick={reserve}
-                >
-                  Reserve
-                </Button>
-
-                <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
-                  Free cancellation up to 48 hours before
-                </div>
-              </div>
-            </div>
-          </aside>
+          <ActivityBookingCard activity={activity} />
         </div>
 
         {related.length > 0 && (
