@@ -28,7 +28,7 @@ export default function HomePage({
     <>
       <Hero />
 
-      <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
         <SectionHeading
           eyebrow="Featured tours"
           title={
@@ -46,17 +46,22 @@ export default function HomePage({
             </Link>
           }
         />
-        <div className="grid gap-x-8 gap-y-12 md:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-14 md:grid-cols-3">
           {tours.slice(0, 3).map((t, i) => (
             <div key={t.id} className={i === 1 ? "md:mt-16" : ""}>
               <TourCard tour={t} />
             </div>
           ))}
         </div>
+        <Button asChild variant="outline" className="mt-10 w-full rounded-full sm:hidden">
+          <Link href="/tours">
+            See all tours <ArrowRight aria-hidden="true" />
+          </Link>
+        </Button>
       </section>
 
       {/* Categories */}
-      <section className="bg-secondary/40 py-24 md:py-32">
+      <section className="bg-secondary/50 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHeading
             eyebrow="Browse by mood"
@@ -87,7 +92,7 @@ export default function HomePage({
                   <span className="font-display text-2xl text-white md:text-3xl">
                     {c.label}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-white transition-transform group-hover:translate-x-1" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 text-white transition-transform group-hover:translate-x-1" />
                 </div>
               </Link>
             ))}
@@ -96,18 +101,18 @@ export default function HomePage({
       </section>
 
       {/* Activities */}
-      <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
         <div className="grid gap-16 md:grid-cols-[1fr_2fr] md:gap-24">
           <div className="md:sticky md:top-28 md:self-start">
-            <p className="mb-3 text-xs uppercase tracking-[0.3em] text-primary">
-              Single-day activities
-            </p>
-            <h2 className="text-balance font-display text-3xl leading-tight text-foreground sm:text-4xl md:text-5xl">
+            <h2 className="text-balance font-display text-3xl leading-[1.06] tracking-[-0.03em] text-foreground sm:text-4xl md:text-5xl">
               A morning, an afternoon, one perfect thing.
             </h2>
             <p className="mt-5 max-w-sm text-sm text-muted-foreground">
               Bookable stand-alone or added to any tour. Small groups, local
               guides, no filler.
+            </p>
+            <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Single-day activities
             </p>
             <Button asChild variant="outline" className="mt-6 rounded-full">
               <Link href="/activities">Browse all activities</Link>
@@ -122,11 +127,9 @@ export default function HomePage({
       </section>
 
       {/* Testimonials */}
-      <section className="border-y border-border bg-secondary/30 py-24 md:py-32">
+      <section className="border-y border-border bg-secondary/30 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <p className="mb-8 text-xs uppercase tracking-[0.3em] text-primary">
-            What travelers say
-          </p>
+          <SectionHeading eyebrow="Traveler notes" title={<>The trips stay with you.</>} />
           <Testimonials testimonials={testimonials} />
         </div>
       </section>
@@ -144,20 +147,20 @@ export default function HomePage({
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/30" />
         <div className="relative mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-40">
           <div className="max-w-2xl">
-            <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/80">
-              Open bookings — 2026
-            </p>
             <h2 className="text-balance font-display text-4xl leading-[0.95] text-white sm:text-5xl md:text-6xl">
               You have <em className="not-italic text-accent">two weeks</em>{" "}
               off. Spend them somewhere real.
             </h2>
+            <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
+              Open bookings — 2026
+            </p>
             <Button
               asChild
               size="lg"
               className="mt-8 rounded-full bg-accent px-7 text-accent-foreground hover:opacity-90"
             >
               <Link href="/tours">
-                Explore Tours <ArrowRight className="ml-1 h-4 w-4" />
+                Explore tours <ArrowRight aria-hidden="true" className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>

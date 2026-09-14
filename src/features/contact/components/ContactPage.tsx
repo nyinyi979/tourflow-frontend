@@ -5,12 +5,12 @@ export default function ContactPage() {
     <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
       <div className="grid gap-16 md:grid-cols-[1fr_1.2fr] md:gap-24">
         <div>
-          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-primary">
-            Say hello
-          </p>
-          <h1 className="text-balance font-display text-5xl leading-tight text-foreground md:text-6xl">
+          <h1 className="text-balance font-display text-5xl leading-[1.02] tracking-[-0.03em] text-foreground md:text-6xl">
             Write to us. We answer.
           </h1>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            Say hello
+          </p>
           <div className="mt-10 space-y-6 text-sm text-muted-foreground">
             <div>
               <div className="text-xs uppercase tracking-widest text-foreground">

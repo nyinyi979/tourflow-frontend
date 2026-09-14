@@ -32,31 +32,35 @@ export default function ToursPage({
   const pageCount = Math.max(1, Math.ceil(total / perPage));
 
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-24 pt-16 md:px-8 md:pb-32 md:pt-24">
-      <p className="mb-4 text-xs uppercase tracking-[0.3em] text-primary">
-        The full list
-      </p>
-      <h1 className="max-w-3xl text-balance font-display text-4xl leading-tight text-foreground md:text-6xl">
+    <section className="mx-auto max-w-7xl px-5 pb-24 pt-14 md:px-8 md:pb-28 md:pt-20">
+      <h1 className="max-w-4xl text-balance font-display text-4xl leading-[1.02] tracking-[-0.03em] text-foreground md:text-6xl">
         Tours worth the long way in.
       </h1>
+      <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
+        Thoughtful itineraries, small groups, and enough breathing room to be
+        somewhere—not just pass through it.
+      </p>
 
       <form
         action="/tours"
-        className="mt-12 grid gap-3 rounded-xl border border-border/70 bg-card p-4 md:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(150px,auto))_auto]"
+        className="mt-10 grid gap-4 rounded-2xl bg-secondary/55 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1.2fr)_repeat(3,minmax(150px,1fr))_auto] lg:items-end"
       >
-        <label className="relative">
-          <span className="sr-only">Search tours</span>
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            name="query"
-            defaultValue={searchValues.query}
-            placeholder="Search tours"
-            className="pl-9"
-          />
+        <label className="grid gap-2">
+          <span className="text-xs font-medium text-foreground">Search</span>
+          <span className="relative">
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              name="query"
+              defaultValue={searchValues.query}
+              placeholder="Place or tour name"
+              className="pl-9"
+            />
+          </span>
         </label>
         <FilterSelect
           name="categoryId"
-          label="All categories"
+          label="Category"
+          emptyLabel="All categories"
           defaultValue={searchValues.categoryId}
           options={categories.map((category) => ({
             value: category.id,
@@ -65,7 +69,8 @@ export default function ToursPage({
         />
         <FilterSelect
           name="difficulty"
-          label="Any difficulty"
+          label="Difficulty"
+          emptyLabel="Any difficulty"
           defaultValue={searchValues.difficulty}
           options={[
             { value: "Easy", label: "Easy" },
@@ -75,7 +80,8 @@ export default function ToursPage({
         />
         <FilterSelect
           name="sort"
-          label="Most popular"
+          label="Sort by"
+          emptyLabel="Most popular"
           defaultValue={searchValues.sort}
           options={[
             { value: "rating-desc", label: "Top rated" },
@@ -84,7 +90,7 @@ export default function ToursPage({
             { value: "createdAt-desc", label: "Newest" },
           ]}
         />
-        <Button type="submit">Apply</Button>
+        <Button type="submit" className="sm:self-end">Show tours</Button>
       </form>
 
       <div className="mt-8 flex items-center justify-between border-b border-border/60 pb-4">
@@ -105,13 +111,16 @@ export default function ToursPage({
           ))}
         </div>
       ) : (
-        <div className="mt-8 rounded-md border border-dashed border-border/60 p-16 text-center">
+        <div className="mt-8 rounded-2xl bg-secondary/45 px-6 py-16 text-center">
           <p className="font-display text-2xl text-foreground">
             No tours match those filters.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
             Try another search or clear the filters.
           </p>
+          <Button asChild variant="outline" className="mt-6 rounded-full">
+            <Link href="/tours">Clear filters</Link>
+          </Button>
         </div>
       )}
 
@@ -128,23 +137,25 @@ export default function ToursPage({
 function FilterSelect({
   name,
   label,
+  emptyLabel,
   defaultValue,
   options,
 }: {
   name: string;
   label: string;
+  emptyLabel: string;
   defaultValue?: string;
   options: Array<{ value: string; label: string }>;
 }) {
   return (
-    <label>
-      <span className="sr-only">{label}</span>
+    <label className="grid gap-2">
+      <span className="text-xs font-medium text-foreground">{label}</span>
       <select
         name={name}
         defaultValue={defaultValue ?? ""}
-        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <option value="">{label}</option>
+        <option value="">{emptyLabel}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

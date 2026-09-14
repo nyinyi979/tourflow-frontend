@@ -5,6 +5,10 @@
 
 :root {
   --radius: 0.5rem;
+  --header-height: 4.5rem;
+  --motion-fast: 160ms;
+  --motion-base: 240ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Editorial travel-magazine palette */
   --cream: oklch(0.972 0.014 85);
@@ -82,8 +86,8 @@
   --color-teal: var(--teal);
   --color-teal-deep: var(--teal-deep);
   --color-ochre: var(--ochre);
-  --font-display: "Fraunces", "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -93,14 +97,34 @@
 
   html {
     font-family: var(--font-sans);
+    scroll-padding-top: calc(var(--header-height) + 1rem);
   }
 
   body {
+    min-height: 100dvh;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    caret-color: var(--color-primary);
   }
 
   h1,
@@ -120,4 +144,15 @@
 
 @utility text-balance {
   text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

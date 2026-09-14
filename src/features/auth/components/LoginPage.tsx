@@ -72,24 +72,26 @@ export default function LoginPage() {
 
       <div className="flex items-center justify-center px-5 py-16 md:px-12">
         <div className="w-full max-w-sm">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary">
-            Welcome back
-          </p>
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
             Sign in.
           </h1>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Return to your bookings and account details.
+          </p>
           <form onSubmit={submit} className="mt-10 space-y-5" noValidate>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
               />
               {errors.email && (
-                <p className="text-xs text-destructive">{errors.email}</p>
+                <p id="email-error" role="alert" className="text-sm text-destructive">{errors.email}</p>
               )}
             </div>
             <div className="space-y-2">
@@ -97,16 +99,18 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? "password-error" : undefined}
               />
               {errors.password && (
-                <p className="text-xs text-destructive">{errors.password}</p>
+                <p id="password-error" role="alert" className="text-sm text-destructive">{errors.password}</p>
               )}
             </div>
             {loginMutation.isError && (
-              <p className="text-sm text-destructive">
+              <p role="alert" className="text-sm text-destructive">
                 {loginMutation.error instanceof Error
                   ? loginMutation.error.message
                   : "Login failed"}

@@ -8,12 +8,12 @@ import NextTopLoader from "nextjs-toploader";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-fraunces",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -53,9 +53,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fraunces.variable} ${inter.variable}`}>
+        <a
+          href="#main-content"
+          className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg transition-transform focus:translate-y-0"
+        >
+          Skip to content
+        </a>
         <NextTopLoader color="#b56b45" height={3} showSpinner={false} />
         <Navbar />
-        <Providers>{children}</Providers>
+        <Providers>
+          <main id="main-content" tabIndex={-1}>
+            {children}
+          </main>
+        </Providers>
         <Footer />
       </body>
     </html>

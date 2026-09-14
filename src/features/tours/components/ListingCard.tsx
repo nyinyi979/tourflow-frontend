@@ -9,7 +9,8 @@ export default function ListingCard({ tour }: { tour: Tour }) {
     <article className="group flex flex-col">
       <Link
         href={"/tours/" + tour.id}
-        className="relative block aspect-[4/5] overflow-hidden rounded-md bg-muted"
+        aria-label={`View ${tour.title}`}
+        className="relative block aspect-[4/5] overflow-hidden rounded-xl bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
       >
         {tour.images[0] && (
           <Image
@@ -17,7 +18,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
             alt={tour.title}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 ease-[var(--ease-out)] group-hover:scale-[1.035]"
           />
         )}
         <div className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs uppercase tracking-widest text-foreground backdrop-blur">
@@ -27,7 +28,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
       <div className="mt-5 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
         <span>{tour.duration} days</span>
         <span className="flex items-center gap-1 text-foreground">
-          <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+          <Star aria-hidden="true" className="h-3.5 w-3.5 fill-accent text-accent" />
           {tour.rating.toFixed(1)}
         </span>
       </div>
@@ -59,7 +60,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
         className="mt-5 w-full rounded-full"
       >
         <Link href={"/tours/" + tour.id}>
-          View details <ArrowRight className="h-3.5 w-3.5" />
+          View details <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
         </Link>
       </Button>
     </article>

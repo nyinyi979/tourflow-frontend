@@ -42,3 +42,4 @@ next-env.d.ts
 
 # Local AI-agent repository guide
 /AGENTS.md
+/.agents

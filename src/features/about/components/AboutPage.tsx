@@ -1,12 +1,12 @@
 export default function AboutPage() {
   return (
     <section className="mx-auto max-w-4xl px-5 py-20 md:px-8 md:py-28">
-      <p className="mb-4 text-xs uppercase tracking-[0.3em] text-primary">
-        About us
-      </p>
-      <h1 className="text-balance font-display text-5xl leading-tight text-foreground md:text-7xl">
+      <h1 className="text-balance font-display text-5xl leading-[1.02] tracking-[-0.03em] text-foreground md:text-7xl">
         A small studio, arranging quiet trips since 2014.
       </h1>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        About TourFlow
+      </p>
       <div className="mt-12 space-y-6 text-lg leading-relaxed text-muted-foreground">
         <p>
           TourFlow is nine people in a converted print shop in Lisbon. We plan

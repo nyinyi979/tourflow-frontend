@@ -1,19 +1,18 @@
 "use client";
-import { Search, MapPin, CalendarDays, Users } from "lucide-react";
+import { ArrowRight, MapPin, Search } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import heroImg from "@/assets/hero.jpeg";
 import { useRouter } from "nextjs-toploader/app";
 
 export function Hero() {
   const [destination, setDestination] = useState("");
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(2);
   const router = useRouter();
 
   return (
-    <section className="relative isolate overflow-hidden bg-ink">
+    <section className="relative isolate min-h-[calc(100svh-var(--header-height))] overflow-hidden bg-ink">
       <Image
         src={heroImg}
         alt="Traveler above misty valleys at sunrise"
@@ -22,90 +21,71 @@ export function Hero() {
         sizes="100vw"
         className="object-cover opacity-90"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/80" />
 
-      <div className="relative mx-auto flex max-w-7xl flex-col justify-end px-5 pb-10 pt-32 md:min-h-[92vh] md:px-8 md:pb-16 md:pt-40">
-        <div className="max-w-3xl">
-          <p className="mb-5 text-xs uppercase tracking-[0.3em] text-white/80">
-            Issue 07 &middot; Slow travel, carefully arranged
-          </p>
-          <h1 className="text-balance font-display text-5xl leading-[0.95] text-white sm:text-6xl md:text-7xl lg:text-8xl">
+      <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-height))] max-w-7xl flex-col justify-end px-5 pb-10 pt-28 md:px-8 md:pb-14 md:pt-36">
+        <div className="max-w-4xl">
+          <h1 className="max-w-4xl text-balance font-display text-5xl leading-[0.94] tracking-[-0.035em] text-white sm:text-6xl md:text-7xl lg:text-8xl">
             The world is wide.
             <br />
             <em className="not-italic text-accent">Go somewhere quiet.</em>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85">
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
             Small-group tours and single-day escapes to places that reward the
             long way in — from Patagonian ridgelines to Kyoto autumns.
           </p>
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const query = destination.trim();
-            router.push(query ? `/tours?query=${encodeURIComponent(query)}` : "/tours");
-          }}
-          className="mt-10 grid gap-3 rounded-2xl bg-background/95 p-3 shadow-2xl backdrop-blur md:mt-14 md:max-w-4xl md:grid-cols-[1.4fr_1fr_1fr_auto] md:gap-2 md:p-2"
-        >
-          <Field icon={<MapPin className="h-4 w-4" />} label="Destination">
-            <input
-              type="text"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              placeholder="Where to?"
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-            />
-          </Field>
-          <Field icon={<CalendarDays className="h-4 w-4" />} label="Date">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-transparent text-sm text-foreground focus:outline-none"
-            />
-          </Field>
-          <Field icon={<Users className="h-4 w-4" />} label="Guests">
-            <input
-              type="number"
-              min={1}
-              max={20}
-              value={guests}
-              onChange={(e) => setGuests(Number(e.target.value))}
-              className="w-full bg-transparent text-sm text-foreground focus:outline-none"
-            />
-          </Field>
-          <Button
-            type="submit"
-            size="lg"
-            className="h-full rounded-xl px-6 md:min-h-[64px]"
+        <div className="mt-9 flex flex-col gap-3 md:mt-12 md:max-w-3xl md:flex-row md:items-center">
+          <form
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const query = destination.trim();
+              router.push(
+                query ? `/tours?query=${encodeURIComponent(query)}` : "/tours",
+              );
+            }}
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl bg-background p-2 shadow-[0_18px_50px_-20px_rgba(0,0,0,0.65)]"
           >
-            <Search className="mr-2 h-4 w-4" /> Search
+            <label className="flex min-w-0 flex-1 items-center gap-3 px-3">
+              <MapPin
+                aria-hidden="true"
+                className="h-5 w-5 shrink-0 text-primary"
+              />
+              <span className="sr-only">Search by destination or tour name</span>
+              <input
+                type="search"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                placeholder="Search a place or trip"
+                autoComplete="off"
+                className="h-11 min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </label>
+            <Button type="submit" size="lg" className="rounded-xl px-5 sm:px-7">
+              <Search aria-hidden="true" />
+              <span className="hidden sm:inline">Find a trip</span>
+              <span className="sm:hidden">Search</span>
+            </Button>
+          </form>
+          <Button
+            asChild
+            variant="ghost"
+            size="lg"
+            className="justify-center rounded-full text-white hover:bg-white/10 hover:text-white md:justify-start"
+          >
+            <Link href="/activities">
+              Browse day trips <ArrowRight aria-hidden="true" />
+            </Link>
           </Button>
-        </form>
+        </div>
+
+        <p className="mt-6 text-sm text-white/75">
+          Carefully planned itineraries · Local guides · Free cancellation up
+          to 48 hours before
+        </p>
       </div>
     </section>
-  );
-}
-
-function Field({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-muted/60">
-      <span className="text-primary">{icon}</span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-          {label}
-        </span>
-        {children}
-      </span>
-    </label>
   );
 }

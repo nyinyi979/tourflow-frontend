@@ -84,12 +84,12 @@ export default function RegisterPage() {
 
       <div className="flex items-center justify-center px-5 py-16 md:px-12">
         <div className="w-full max-w-sm">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary">
-            Get started
-          </p>
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
             Create your account.
           </h1>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Save your details, complete bookings, and keep every trip in one place.
+          </p>
           <form onSubmit={submit} className="mt-10 space-y-5" noValidate>
             <Field
               id="name"
@@ -97,6 +97,7 @@ export default function RegisterPage() {
               value={form.name}
               onChange={(v) => update("name", v)}
               error={errors.name}
+              autoComplete="name"
             />
             <Field
               id="email"
@@ -105,6 +106,7 @@ export default function RegisterPage() {
               value={form.email}
               onChange={(v) => update("email", v)}
               error={errors.email}
+              autoComplete="email"
             />
             <Field
               id="password"
@@ -113,6 +115,7 @@ export default function RegisterPage() {
               value={form.password}
               onChange={(v) => update("password", v)}
               error={errors.password}
+              autoComplete="new-password"
             />
             <Field
               id="confirm"
@@ -121,9 +124,10 @@ export default function RegisterPage() {
               value={form.confirm}
               onChange={(v) => update("confirm", v)}
               error={errors.confirm}
+              autoComplete="new-password"
             />
             {signupMutation.isError && (
-              <p className="text-sm text-destructive">
+              <p role="alert" className="text-sm text-destructive">
                 {signupMutation.error instanceof Error
                   ? signupMutation.error.message
                   : "Unable to create account"}
@@ -155,6 +159,7 @@ function Field({
   onChange,
   type = "text",
   error,
+  autoComplete,
 }: {
   id: string;
   label: string;
@@ -162,6 +167,7 @@ function Field({
   onChange: (v: string) => void;
   type?: string;
   error?: string;
+  autoComplete?: string;
 }) {
   return (
     <div className="space-y-2">
@@ -170,10 +176,12 @@ function Field({
         id={id}
         type={type}
         value={value}
+        autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : undefined}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p id={`${id}-error`} role="alert" className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

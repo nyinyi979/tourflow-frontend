@@ -16,8 +16,12 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
   }
 
   return (
-    <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
-      <blockquote className="max-w-3xl">
+    <div
+      className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end"
+      role="region"
+      aria-label="Traveler testimonials"
+    >
+      <blockquote className="max-w-3xl" aria-live="polite">
         <p className="font-display text-3xl leading-snug text-foreground sm:text-4xl md:text-5xl">
           <span className="text-accent">“</span>
           {t.quote}
@@ -41,7 +45,7 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
             <div className="font-medium text-foreground">{t.name}</div>
             <div className="mt-1 flex gap-0.5">
               {Array.from({ length: t.rating }).map((_, k) => (
-                <Star key={k} className="h-3.5 w-3.5 fill-accent text-accent" />
+                <Star key={k} aria-hidden="true" className="h-3.5 w-3.5 fill-accent text-accent" />
               ))}
             </div>
           </div>
@@ -50,10 +54,10 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
       <div className="flex items-center gap-3">
         <button
           onClick={prev}
-          aria-label="Previous"
-          className="grid h-11 w-11 place-items-center rounded-full border border-border transition-colors hover:bg-secondary"
+          aria-label="Previous testimonial"
+          className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-border transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft aria-hidden="true" className="h-4 w-4" />
         </button>
         <span className="text-xs tabular-nums text-muted-foreground">
           {String(i + 1).padStart(2, "0")} /{" "}
@@ -61,10 +65,10 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
         </span>
         <button
           onClick={next}
-          aria-label="Next"
-          className="grid h-11 w-11 place-items-center rounded-full border border-border bg-primary text-primary-foreground transition-colors hover:opacity-90"
+          aria-label="Next testimonial"
+          className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-border bg-primary text-primary-foreground transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight aria-hidden="true" className="h-4 w-4" />
         </button>
       </div>
     </div>
