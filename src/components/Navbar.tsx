@@ -9,16 +9,19 @@ import {
   hasCustomerSession,
   subscribeCustomerSession,
 } from "@/lib/customerAuth";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
+import { LanguageSwitch } from "./LanguageSwitch";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/tours", label: "Tours" },
-  { href: "/activities", label: "Activities" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", key: "home" },
+  { href: "/tours", key: "tours" },
+  { href: "/activities", key: "activities" },
+  { href: "/about", key: "about" },
+  { href: "/contact", key: "contact" },
 ] as const;
 
 export function Navbar() {
+  const t = useMessages().nav;
   const [open, setOpen] = useState(false);
   const authenticated = useSyncExternalStore(
     subscribeCustomerSession,
@@ -38,7 +41,7 @@ export function Navbar() {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 md:px-8">
         <Link
           href="/"
-          aria-label="TourFlow home"
+          aria-label={t.homeLabel}
           className="rounded-sm font-display text-2xl tracking-tight text-foreground"
         >
           <span>
@@ -58,35 +61,38 @@ export function Navbar() {
               )}
               aria-current={isActive(l.href) ? "page" : undefined}
             >
-              {l.label}
+              {t[l.key]}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <LanguageSwitch />
           {authenticated && (
             <Link
               href="/bookings"
               className="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              My bookings
+              {t.myBookings}
             </Link>
           )}
           <Button asChild variant="ghost" className="rounded-full px-4">
             <Link href={authenticated ? "/account" : "/login"}>
-              {authenticated ? "My account" : "Log in"}
+              {authenticated ? t.myAccount : t.logIn}
             </Link>
           </Button>
           <Button asChild className="rounded-full px-5">
             <Link href="/tours">
-              Explore trips <ArrowUpRight aria-hidden="true" />
+              {t.explore} <ArrowUpRight aria-hidden="true" />
             </Link>
           </Button>
         </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+        <LanguageSwitch />
         <Button
           type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t.closeMenu : t.openMenu}
           aria-expanded={open}
           aria-controls="mobile-navigation"
           variant="ghost"
@@ -100,6 +106,7 @@ export function Navbar() {
             <Menu aria-hidden="true" className="h-5 w-5" />
           )}
         </Button>
+        </div>
       </div>
 
       {open && (
@@ -107,7 +114,7 @@ export function Navbar() {
           id="mobile-navigation"
           className="border-t border-border/60 bg-background shadow-[0_18px_40px_-24px_rgba(18,31,36,0.45)] md:hidden"
         >
-          <nav aria-label="Mobile navigation" className="flex flex-col px-5 py-4">
+          <nav aria-label={t.mobile} className="flex flex-col px-5 py-4">
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -119,7 +126,7 @@ export function Navbar() {
                   isActive(l.href) && "font-semibold text-foreground",
                 )}
               >
-                {l.label}
+                {t[l.key]}
               </Link>
             ))}
             {authenticated && (
@@ -128,7 +135,7 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className="flex min-h-12 items-center border-b border-border/50 text-base text-foreground"
               >
-                My bookings
+                {t.myBookings}
               </Link>
             )}
             <Button asChild variant="outline" className="mt-4 rounded-full">
@@ -136,12 +143,12 @@ export function Navbar() {
                 href={authenticated ? "/account" : "/login"}
                 onClick={() => setOpen(false)}
               >
-                {authenticated ? "My account" : "Log in"}
+                {authenticated ? t.myAccount : t.logIn}
               </Link>
             </Button>
             <Button asChild className="mt-2 rounded-full">
               <Link href="/tours">
-                Explore trips <ArrowUpRight aria-hidden="true" />
+                {t.explore} <ArrowUpRight aria-hidden="true" />
               </Link>
             </Button>
           </nav>

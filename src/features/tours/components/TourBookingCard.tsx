@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
+import { th as thLocale } from "date-fns/locale";
+import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
 import { CalendarIcon, Minus, Plus, ShieldCheck, Zap } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,10 @@ import type { Tour } from "../types";
 
 export default function TourBookingCard({ tour }: { tour: Tour }) {
   const router = useRouter();
+  const locale = useLocale();
+  const m = useMessages();
+  const t = m.tourBooking;
+  const dateLocale = locale === "th" ? thLocale : undefined;
   const [date, setDate] = useState<Date>();
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
@@ -42,13 +48,13 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
             <span className="font-display text-3xl text-primary">
               ${tour.price.toLocaleString()}
             </span>
-            <span className="text-xs text-muted-foreground">/ person</span>
+            <span className="text-xs text-muted-foreground">{m.common.perPerson}</span>
           </div>
 
           <div className="mt-6 space-y-4">
             <div>
               <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-                Date
+                {m.common.date}
               </label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -60,7 +66,7 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
                     )}
                   >
                     <CalendarIcon className="h-4 w-4" />
-                    {date ? format(date, "PPP") : "Pick a date"}
+                    {date ? format(date, "PPP", { locale: dateLocale }) : t.pickDate}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -68,6 +74,7 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
                     mode="single"
                     selected={date}
                     onSelect={setDate}
+                    locale={dateLocale}
                     disabled={(day) => day < new Date()}
                     initialFocus
                     className="pointer-events-auto p-3"
@@ -77,33 +84,37 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
             </div>
 
             <GuestStepper
-              label="Adults"
-              sub="Age 13+"
+              label={t.adults}
+              sub={t.adultsSub}
               value={adults}
               onChange={setAdults}
               min={1}
+              decreaseLabel={t.decrease(t.adults)}
+              increaseLabel={t.increase(t.adults)}
             />
             <GuestStepper
-              label="Children"
-              sub="Age 2–12 · half price"
+              label={t.children}
+              sub={t.childrenSub}
               value={children}
               onChange={setChildren}
+              decreaseLabel={t.decrease(t.children)}
+              increaseLabel={t.increase(t.children)}
             />
           </div>
 
           <div className="mt-6 space-y-2 border-t border-border/60 pt-4 text-sm">
             <PriceRow
-              label={`Adults × ${adults}`}
+              label={t.adultsTimes(adults)}
               value={`$${(tour.price * adults).toLocaleString()}`}
             />
             {children > 0 && (
               <PriceRow
-                label={`Children × ${children}`}
+                label={t.childrenTimes(children)}
                 value={`$${(tour.price * children * 0.5).toLocaleString()}`}
               />
             )}
             <PriceRow
-              label="Total"
+              label={m.common.total}
               value={`$${total.toLocaleString()}`}
               bold
             />
@@ -115,17 +126,17 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
             onClick={book}
             disabled={!date}
           >
-            Book now
+            {t.book}
           </Button>
 
           <div className="mt-5 flex flex-col gap-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              Free cancellation up to 30 days out
+              {t.freeCancel}
             </span>
             <span className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-primary" />
-              Instant confirmation
+              {t.instant}
             </span>
           </div>
         </div>
@@ -162,12 +173,16 @@ function GuestStepper({
   value,
   onChange,
   min = 0,
+  decreaseLabel,
+  increaseLabel,
 }: {
   label: string;
   sub?: string;
   value: number;
   onChange: (value: number) => void;
   min?: number;
+  decreaseLabel: string;
+  increaseLabel: string;
 }) {
   return (
     <div className="flex items-center justify-between">
@@ -183,7 +198,7 @@ function GuestStepper({
           className="h-8 w-8 rounded-full"
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
-          aria-label={`Decrease ${label.toLowerCase()}`}
+          aria-label={decreaseLabel}
         >
           <Minus className="h-3.5 w-3.5" />
         </Button>
@@ -194,7 +209,7 @@ function GuestStepper({
           variant="outline"
           className="h-8 w-8 rounded-full"
           onClick={() => onChange(value + 1)}
-          aria-label={`Increase ${label.toLowerCase()}`}
+          aria-label={increaseLabel}
         >
           <Plus className="h-3.5 w-3.5" />
         </Button>

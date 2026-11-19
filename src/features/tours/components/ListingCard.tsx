@@ -1,15 +1,18 @@
+"use client";
 import Image from "next/image";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star } from "lucide-react";
 import type { Tour } from "../types";
 
 export default function ListingCard({ tour }: { tour: Tour }) {
+  const t = useMessages().common;
   return (
     <article className="group flex flex-col">
       <Link
         href={"/tours/" + tour.id}
-        aria-label={`View ${tour.title}`}
+        aria-label={t.view(tour.title)}
         className="relative block aspect-[4/5] overflow-hidden rounded-xl bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
       >
         {tour.images[0] && (
@@ -26,7 +29,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
         </div>
       </Link>
       <div className="mt-5 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
-        <span>{tour.duration} days</span>
+        <span>{t.days(tour.duration)}</span>
         <span className="flex items-center gap-1 text-foreground">
           <Star aria-hidden="true" className="h-3.5 w-3.5 fill-accent text-accent" />
           {tour.rating.toFixed(1)}
@@ -45,12 +48,12 @@ export default function ListingCard({ tour }: { tour: Tour }) {
           <span className="font-display text-xl text-primary">
             ${tour.price.toLocaleString()}
           </span>
-          <span className="text-xs text-muted-foreground">/ person</span>
+          <span className="text-xs text-muted-foreground">{t.perPerson}</span>
         </div>
         <span
           className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-widest ${difficultyBadgeClass(tour.difficulty)}`}
         >
-          {tour.difficulty === "Challenging" ? "Hard" : tour.difficulty}
+          {t.difficultyShort[tour.difficulty] ?? tour.difficulty}
         </span>
       </div>
       <Button
@@ -60,7 +63,7 @@ export default function ListingCard({ tour }: { tour: Tour }) {
         className="mt-5 w-full rounded-full"
       >
         <Link href={"/tours/" + tour.id}>
-          View details <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+          {t.viewDetails} <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
         </Link>
       </Button>
     </article>

@@ -1,3 +1,4 @@
+import { getMessages } from "@/lib/i18n/server";
 import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
@@ -23,7 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const activity = await loadActivity(id);
-  if (!activity) return { title: "Activity not found" };
+  if (!activity) return { title: (await getMessages()).meta.activityNotFound };
   return {
     title: activity.title,
     description: activity.description,

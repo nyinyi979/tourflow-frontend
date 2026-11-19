@@ -6,8 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import heroImg from "@/assets/hero.jpeg";
 import { useRouter } from "nextjs-toploader/app";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export function Hero() {
+  const t = useMessages().hero;
   const [destination, setDestination] = useState("");
   const router = useRouter();
 
@@ -15,7 +17,7 @@ export function Hero() {
     <section className="relative isolate min-h-[calc(100svh-var(--header-height))] overflow-hidden bg-ink">
       <Image
         src={heroImg}
-        alt="Traveler above misty valleys at sunrise"
+        alt={t.alt}
         fill
         priority
         sizes="100vw"
@@ -26,13 +28,12 @@ export function Hero() {
       <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-height))] max-w-7xl flex-col justify-end px-5 pb-10 pt-28 md:px-8 md:pb-14 md:pt-36">
         <div className="max-w-4xl">
           <h1 className="max-w-4xl text-balance font-display text-5xl leading-[0.94] tracking-[-0.035em] text-white sm:text-6xl md:text-7xl lg:text-8xl">
-            The world is wide.
+            {t.title}
             <br />
-            <em className="not-italic text-accent">Go somewhere quiet.</em>
+            <em className="not-italic text-accent">{t.titleAccent}</em>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
-            Small-group tours and single-day escapes to places that reward the
-            long way in — from Patagonian ridgelines to Kyoto autumns.
+            {t.lead}
           </p>
         </div>
 
@@ -53,20 +54,20 @@ export function Hero() {
                 aria-hidden="true"
                 className="h-5 w-5 shrink-0 text-primary"
               />
-              <span className="sr-only">Search by destination or tour name</span>
+              <span className="sr-only">{t.searchLabel}</span>
               <input
                 type="search"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder="Search a place or trip"
+                placeholder={t.placeholder}
                 autoComplete="off"
                 className="h-11 min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
             </label>
             <Button type="submit" size="lg" className="rounded-xl px-5 sm:px-7">
               <Search aria-hidden="true" />
-              <span className="hidden sm:inline">Find a trip</span>
-              <span className="sm:hidden">Search</span>
+              <span className="hidden sm:inline">{t.find}</span>
+              <span className="sm:hidden">{t.searchShort}</span>
             </Button>
           </form>
           <Button
@@ -76,14 +77,13 @@ export function Hero() {
             className="justify-center rounded-full text-white hover:bg-white/10 hover:text-white md:justify-start"
           >
             <Link href="/activities">
-              Browse day trips <ArrowRight aria-hidden="true" />
+              {t.dayTrips} <ArrowRight aria-hidden="true" />
             </Link>
           </Button>
         </div>
 
         <p className="mt-6 text-sm text-white/75">
-          Carefully planned itineraries · Local guides · Free cancellation up
-          to 48 hours before
+          {t.note}
         </p>
       </div>
     </section>

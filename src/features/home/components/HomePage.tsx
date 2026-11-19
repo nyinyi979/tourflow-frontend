@@ -12,8 +12,9 @@ import type { Tour } from "@/features/tours/types";
 import type { Activity } from "@/features/activities/types";
 import type { Category } from "@/features/categories/types";
 import type { Testimonial } from "@/features/testimonials/types";
+import { getMessages } from "@/lib/i18n/server";
 
-export default function HomePage({
+export default async function HomePage({
   tours = [],
   activities = [],
   categories = [],
@@ -24,17 +25,18 @@ export default function HomePage({
   categories?: Category[];
   testimonials?: Testimonial[];
 }) {
+  const t = (await getMessages()).home;
   return (
     <>
       <Hero />
 
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
         <SectionHeading
-          eyebrow="Featured tours"
+          eyebrow={t.featuredEyebrow}
           title={
             <>
-              Three trips we&apos;d take{" "}
-              <em className="font-display italic text-primary">this season.</em>
+              {t.featuredTitle}{" "}
+              <em className="font-display italic text-primary">{t.featuredAccent}</em>
             </>
           }
           right={
@@ -42,7 +44,7 @@ export default function HomePage({
               href="/tours"
               className="hidden items-center gap-2 text-sm text-foreground hover:text-primary sm:inline-flex"
             >
-              All tours <ArrowRight className="h-4 w-4" />
+              {t.allTours} <ArrowRight className="h-4 w-4" />
             </Link>
           }
         />
@@ -55,7 +57,7 @@ export default function HomePage({
         </div>
         <Button asChild variant="outline" className="mt-10 w-full rounded-full sm:hidden">
           <Link href="/tours">
-            See all tours <ArrowRight aria-hidden="true" />
+            {t.seeAllTours} <ArrowRight aria-hidden="true" />
           </Link>
         </Button>
       </section>
@@ -64,8 +66,8 @@ export default function HomePage({
       <section className="bg-secondary/50 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHeading
-            eyebrow="Browse by mood"
-            title={<>Find your kind of trip.</>}
+            eyebrow={t.moodEyebrow}
+            title={<>{t.moodTitle}</>}
           />
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
             {categories.slice(0, 4).map((c, i) => (
@@ -105,17 +107,16 @@ export default function HomePage({
         <div className="grid gap-16 md:grid-cols-[1fr_2fr] md:gap-24">
           <div className="md:sticky md:top-28 md:self-start">
             <h2 className="text-balance font-display text-3xl leading-[1.06] tracking-[-0.03em] text-foreground sm:text-4xl md:text-5xl">
-              A morning, an afternoon, one perfect thing.
+              {t.activitiesTitle}
             </h2>
             <p className="mt-5 max-w-sm text-sm text-muted-foreground">
-              Bookable stand-alone or added to any tour. Small groups, local
-              guides, no filler.
+              {t.activitiesBody}
             </p>
             <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Single-day activities
+              {t.activitiesEyebrow}
             </p>
             <Button asChild variant="outline" className="mt-6 rounded-full">
-              <Link href="/activities">Browse all activities</Link>
+              <Link href="/activities">{t.browseActivities}</Link>
             </Button>
           </div>
           <div className="space-y-8">
@@ -129,7 +130,7 @@ export default function HomePage({
       {/* Testimonials */}
       <section className="border-y border-border bg-secondary/30 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <SectionHeading eyebrow="Traveler notes" title={<>The trips stay with you.</>} />
+          <SectionHeading eyebrow={t.notesEyebrow} title={<>{t.notesTitle}</>} />
           <Testimonials testimonials={testimonials} />
         </div>
       </section>
@@ -138,7 +139,7 @@ export default function HomePage({
       <section className="relative isolate mx-auto max-w-[110rem] overflow-hidden md:rounded-2xl">
         <Image
           src={ctaImg}
-          alt="Open road through volcanic landscape"
+          alt={t.ctaAlt}
           fill
           loading="lazy"
           sizes="100vw"
@@ -148,11 +149,11 @@ export default function HomePage({
         <div className="relative mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-40">
           <div className="max-w-2xl">
             <h2 className="text-balance font-display text-4xl leading-[0.95] text-white sm:text-5xl md:text-6xl">
-              You have <em className="not-italic text-accent">two weeks</em>{" "}
-              off. Spend them somewhere real.
+              {t.ctaBefore} <em className="not-italic text-accent">{t.ctaAccent}</em>{" "}
+              {t.ctaAfter}
             </h2>
             <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
-              Open bookings — 2026
+              {t.ctaEyebrow}
             </p>
             <Button
               asChild
@@ -160,7 +161,7 @@ export default function HomePage({
               className="mt-8 rounded-full bg-accent px-7 text-accent-foreground hover:opacity-90"
             >
               <Link href="/tours">
-                Explore tours <ArrowRight aria-hidden="true" className="ml-1 h-4 w-4" />
+                {t.exploreTours} <ArrowRight aria-hidden="true" className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>

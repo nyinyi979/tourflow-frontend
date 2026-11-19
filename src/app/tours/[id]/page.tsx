@@ -1,3 +1,4 @@
+import { getMessages } from "@/lib/i18n/server";
 import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
@@ -23,7 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const tour = await loadTour(id);
-  if (!tour) return { title: "Tour not found" };
+  if (!tour) return { title: (await getMessages()).meta.tourNotFound };
   return {
     title: tour.title,
     description: tour.description,

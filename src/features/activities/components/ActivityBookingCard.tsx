@@ -6,6 +6,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Activity } from "../types";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export default function ActivityBookingCard({
   activity,
@@ -13,6 +14,8 @@ export default function ActivityBookingCard({
   activity: Activity;
 }) {
   const router = useRouter();
+  const m = useMessages();
+  const t = m.activities;
   const [guests, setGuests] = useState(2);
   const [date, setDate] = useState("");
   const total = activity.price * guests;
@@ -38,12 +41,12 @@ export default function ActivityBookingCard({
             <span className="font-display text-3xl text-primary">
               ${activity.price}
             </span>
-            <span className="text-xs text-muted-foreground">/ person</span>
+            <span className="text-xs text-muted-foreground">{m.common.perPerson}</span>
           </div>
 
           <div className="mt-6">
             <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-              Date
+              {m.common.date}
             </label>
             <Input
               type="date"
@@ -55,12 +58,12 @@ export default function ActivityBookingCard({
 
           <div className="mt-6">
             <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-              Guests
+              {m.common.guests}
             </label>
             <div className="flex items-center justify-between rounded-md border border-input px-3 py-2">
               <div className="flex items-center gap-2 text-sm">
                 <Users className="h-4 w-4 text-muted-foreground" />
-                {guests} {guests === 1 ? "person" : "people"}
+                {t.people(guests)}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -70,7 +73,7 @@ export default function ActivityBookingCard({
                   className="h-7 w-7 rounded-full"
                   onClick={() => setGuests(Math.max(1, guests - 1))}
                   disabled={guests <= 1}
-                  aria-label="Decrease guests"
+                  aria-label={t.decrease}
                 >
                   −
                 </Button>
@@ -80,7 +83,7 @@ export default function ActivityBookingCard({
                   variant="outline"
                   className="h-7 w-7 rounded-full"
                   onClick={() => setGuests(guests + 1)}
-                  aria-label="Increase guests"
+                  aria-label={t.increase}
                 >
                   +
                 </Button>
@@ -89,7 +92,7 @@ export default function ActivityBookingCard({
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4 text-base">
-            <span className="font-medium">Total</span>
+            <span className="font-medium">{m.common.total}</span>
             <span className="font-display text-xl">
               ${total.toLocaleString()}
             </span>
@@ -101,12 +104,12 @@ export default function ActivityBookingCard({
             disabled={!date}
             onClick={reserve}
           >
-            Reserve
+            {t.reserve}
           </Button>
 
           <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" />
-            Free cancellation up to 48 hours before
+            {t.freeCancel}
           </div>
         </div>
       </div>

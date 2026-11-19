@@ -1,10 +1,8 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/i18n/server";
 import AccountPage from "@/features/account/components/AccountPage";
 
-export const metadata: Metadata = {
-  title: "My account",
-  description: "View your TourFlow profile and bookings.",
-};
+export const generateMetadata = () =>
+  pageMetadata("account", "accountDescription");
 
 export default function Page() {
   return <AccountPage />;

@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { signupCustomer } from "../api";
 import { getAuthPath, getSafeNextPath } from "@/lib/redirects";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 type Form = {
   name: string;
@@ -21,6 +22,8 @@ type Form = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const m = useMessages();
+  const t = m.register;
   const searchParams = useSearchParams();
   const nextPath = getSafeNextPath(searchParams.get("next"), "/account");
   const [form, setForm] = useState<Form>({
@@ -46,10 +49,10 @@ export default function RegisterPage() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const err: Partial<Record<keyof Form, string>> = {};
-    if (!form.name.trim()) err.name = "Required";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Enter a valid email";
-    if (form.password.length < 8) err.password = "At least 8 characters";
-    if (form.password !== form.confirm) err.confirm = "Passwords don't match";
+    if (!form.name.trim()) err.name = t.required;
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = m.login.errEmail;
+    if (form.password.length < 8) err.password = t.minChars;
+    if (form.password !== form.confirm) err.confirm = t.mismatch;
     setErrors(err);
     if (!Object.keys(err).length) {
       signupMutation.mutate({
@@ -74,10 +77,10 @@ export default function RegisterPage() {
             TourFlow
           </p>
           <blockquote className="mt-4 max-w-md font-display text-3xl leading-tight text-white md:text-4xl">
-            &ldquo;Travel is the only thing you buy that makes you richer.&rdquo;
+            &ldquo;{t.quote}&rdquo;
           </blockquote>
           <cite className="mt-4 text-sm not-italic text-white/70">
-            — Anonymous
+            {t.cite}
           </cite>
         </div>
       </div>
@@ -85,15 +88,15 @@ export default function RegisterPage() {
       <div className="flex items-center justify-center px-5 py-16 md:px-12">
         <div className="w-full max-w-sm">
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
-            Create your account.
+            {t.title}
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Save your details, complete bookings, and keep every trip in one place.
+            {t.lead}
           </p>
           <form onSubmit={submit} className="mt-10 space-y-5" noValidate>
             <Field
               id="name"
-              label="Full name"
+              label={t.fullName}
               value={form.name}
               onChange={(v) => update("name", v)}
               error={errors.name}
@@ -102,7 +105,7 @@ export default function RegisterPage() {
             <Field
               id="email"
               type="email"
-              label="Email"
+              label={m.login.email}
               value={form.email}
               onChange={(v) => update("email", v)}
               error={errors.email}
@@ -111,7 +114,7 @@ export default function RegisterPage() {
             <Field
               id="password"
               type="password"
-              label="Password"
+              label={m.login.password}
               value={form.password}
               onChange={(v) => update("password", v)}
               error={errors.password}
@@ -120,7 +123,7 @@ export default function RegisterPage() {
             <Field
               id="confirm"
               type="password"
-              label="Confirm password"
+              label={t.confirm}
               value={form.confirm}
               onChange={(v) => update("confirm", v)}
               error={errors.confirm}
@@ -130,20 +133,20 @@ export default function RegisterPage() {
               <p role="alert" className="text-sm text-destructive">
                 {signupMutation.error instanceof Error
                   ? signupMutation.error.message
-                  : "Unable to create account"}
+                  : t.failed}
               </p>
             )}
             <Button type="submit" size="lg" disabled={signupMutation.isPending} className="w-full rounded-full">
-              {signupMutation.isPending ? "Creating account…" : "Create account"}
+              {signupMutation.isPending ? t.pending : t.submit}
             </Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t.haveAccount}{" "}
             <Link
               href={getAuthPath("/login", nextPath)}
               className="text-primary hover:underline"
             >
-              Log in
+              {t.logIn}
             </Link>
           </p>
         </div>

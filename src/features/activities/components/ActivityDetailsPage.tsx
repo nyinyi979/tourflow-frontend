@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ActivityBookingCard from "./ActivityBookingCard";
 import type { Activity } from "../types";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export default function ActivityDetailPage({
   activity,
@@ -15,6 +16,8 @@ export default function ActivityDetailPage({
   related: Activity[];
 }) {
   const [activeImg, setActiveImg] = useState(0);
+  const m = useMessages();
+  const t = m.activities;
 
   return (
     <>
@@ -23,7 +26,7 @@ export default function ActivityDetailPage({
           href="/activities"
           className="text-xs uppercase tracking-[0.3em] text-muted-foreground hover:text-primary"
         >
-          ← All activities
+          {t.back}
         </Link>
 
         <div className="mt-6 grid gap-3 md:grid-cols-[2fr_1fr]">
@@ -74,7 +77,7 @@ export default function ActivityDetailPage({
               </span>
               <span className="flex items-center gap-1 text-muted-foreground">
                 <Clock className="h-3.5 w-3.5" />
-                {activity.duration} hours
+                {m.common.hours(activity.duration)}
               </span>
               <span className="flex items-center gap-1 text-foreground">
                 <Star className="h-3.5 w-3.5 fill-accent text-accent" />
@@ -96,7 +99,7 @@ export default function ActivityDetailPage({
             {activity.highlights.length > 0 && (
               <div className="mt-12">
                 <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                  What you&apos;ll do
+                  {t.whatYouDo}
                 </h2>
                 <ul className="grid gap-3 sm:grid-cols-2">
                   {activity.highlights.map((highlight) => (
@@ -115,7 +118,7 @@ export default function ActivityDetailPage({
             {activity.included.length > 0 && (
               <div className="mt-12">
                 <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                  What&apos;s included
+                  {t.included}
                 </h2>
                 <ul className="flex flex-wrap gap-2">
                   {activity.included.map((item) => (
@@ -135,7 +138,7 @@ export default function ActivityDetailPage({
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary">
-                    Meeting point
+                    {t.meetingPoint}
                   </div>
                   <div className="mt-1 text-sm text-foreground/90">
                     {activity.meetingPoint}
@@ -151,7 +154,7 @@ export default function ActivityDetailPage({
         {related.length > 0 && (
           <div className="mt-24">
             <h2 className="mb-8 font-display text-3xl text-foreground md:text-4xl">
-              More single-day experiences
+              {t.more}
             </h2>
             <div className="grid gap-x-8 gap-y-12 md:grid-cols-3">
               {related.map((a) => (
@@ -170,7 +173,7 @@ export default function ActivityDetailPage({
                     />
                   </div>
                   <div className="mt-4 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
-                    <span>{a.duration}h</span>
+                    <span>{m.common.hoursShort(a.duration)}</span>
                     <span className="flex items-center gap-1 text-foreground">
                       <Star className="h-3 w-3 fill-accent text-accent" />
                       {a.rating.toFixed(1)}
@@ -181,7 +184,7 @@ export default function ActivityDetailPage({
                   </h3>
                   <p className="mt-2 text-sm text-primary">
                     <span className="font-display text-base">${a.price}</span>
-                    <span className="text-muted-foreground"> / person</span>
+                    <span className="text-muted-foreground"> {m.common.perPerson}</span>
                   </p>
                 </Link>
               ))}

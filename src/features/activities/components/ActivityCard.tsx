@@ -1,9 +1,12 @@
+"use client";
 import { Star, Clock, ArrowUpRight } from "lucide-react";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import Link from "next/link";
 import Image from "next/image";
 import type { Activity } from "../types";
 
 export function ActivityCard({ activity }: { activity: Activity }) {
+  const t = useMessages().common;
   return (
     <Link
       href={"/activities/" + activity.id}
@@ -14,7 +17,7 @@ export function ActivityCard({ activity }: { activity: Activity }) {
           <span>{activity.category.label}</span>
           <span className="flex items-center gap-1">
             <Clock aria-hidden="true" className="h-3 w-3" />
-            {activity.duration}h
+            {t.hoursShort(activity.duration)}
           </span>
           <span className="flex items-center gap-1 text-foreground">
             <Star aria-hidden="true" className="h-3 w-3 fill-accent text-accent" />
@@ -30,7 +33,7 @@ export function ActivityCard({ activity }: { activity: Activity }) {
         </p>
         <p className="mt-3 text-sm text-primary">
           <span className="font-display text-lg">${activity.price}</span>
-          <span className="text-muted-foreground"> / person</span>
+          <span className="text-muted-foreground"> {t.perPerson}</span>
         </p>
       </div>
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted sm:aspect-square sm:w-40 md:w-56">

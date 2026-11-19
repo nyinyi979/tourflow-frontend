@@ -13,6 +13,7 @@ import ReviewsSection from "@/features/reviews/components/ReviewSection";
 import RelatedCard from "./RelatedTourCard";
 import TourBookingCard from "./TourBookingCard";
 import type { Tour } from "../types";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export default function TourDetailsPage({
   tour,
@@ -22,6 +23,8 @@ export default function TourDetailsPage({
   related: Tour[];
 }) {
   const [activeImg, setActiveImg] = useState(0);
+  const m = useMessages();
+  const t = m.tours;
 
   return (
     <>
@@ -75,10 +78,10 @@ export default function TourDetailsPage({
                 {tour.category.label}
               </span>
               <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
-                {tour.difficulty === "Challenging" ? "Hard" : tour.difficulty}
+                {m.common.difficultyShort[tour.difficulty] ?? tour.difficulty}
               </span>
               <span className="text-muted-foreground">
-                {tour.duration} days
+                {m.common.days(tour.duration)}
               </span>
             </div>
             <h1 className="mt-4 font-display text-4xl leading-tight text-foreground md:text-6xl">
@@ -88,7 +91,7 @@ export default function TourDetailsPage({
               <Star className="h-4 w-4 fill-accent text-accent" />
               <span className="font-medium">{tour.rating.toFixed(1)}</span>
               <span className="text-muted-foreground">
-                ({tour.reviewCount} reviews)
+                {t.reviewCount(tour.reviewCount)}
               </span>
             </div>
 
@@ -98,7 +101,7 @@ export default function TourDetailsPage({
 
             <div className="mt-12">
               <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                Highlights
+                {t.highlights}
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {tour.highlights.map((highlight) => (
@@ -115,7 +118,7 @@ export default function TourDetailsPage({
 
             <div className="mt-14">
               <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                Day by day
+                {t.dayByDay}
               </h2>
               <Accordion type="single" collapsible className="w-full">
                 {tour.itinerary.map((d) => (
@@ -123,7 +126,7 @@ export default function TourDetailsPage({
                     <AccordionTrigger>
                       <span className="font-display text-lg">
                         <span className="mr-4 text-muted-foreground">
-                          Day {d.day}
+                          {t.day(d.day)}
                         </span>
                         {d.title}
                       </span>
@@ -146,7 +149,7 @@ export default function TourDetailsPage({
         {/* Related */}
         <div className="mt-24">
           <h2 className="mb-8 font-display text-3xl text-foreground md:text-4xl">
-            You might also like
+            {t.related}
           </h2>
           <div className="grid gap-x-8 gap-y-12 md:grid-cols-3">
             {related.map((t) => (

@@ -1,14 +1,17 @@
+"use client";
 import type { Tour } from "../types";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export function TourCard({ tour }: { tour: Tour }) {
+  const t = useMessages().common;
   return (
     <article className="group flex flex-col">
       <Link
         href={`/tours/${tour.id}`}
-        aria-label={`View ${tour.title}`}
+        aria-label={t.view(tour.title)}
         className="relative aspect-[4/5] overflow-hidden rounded-xl bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
       >
         {tour.images[0] && <Image
@@ -23,7 +26,7 @@ export function TourCard({ tour }: { tour: Tour }) {
         </div>
       </Link>
       <div className="mt-5 flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
-        <span>{tour.duration} days</span>
+        <span>{t.days(tour.duration)}</span>
         <span className="flex items-center gap-1 text-foreground">
           <Star aria-hidden="true" className="h-3.5 w-3.5 fill-accent text-accent" />
           {tour.rating.toFixed(1)}
@@ -39,7 +42,7 @@ export function TourCard({ tour }: { tour: Tour }) {
         <span className="font-display text-xl text-primary">
           ${tour.price.toLocaleString()}
         </span>
-        <span className="text-xs text-muted-foreground">/ person</span>
+        <span className="text-xs text-muted-foreground">{t.perPerson}</span>
       </div>
     </article>
   );

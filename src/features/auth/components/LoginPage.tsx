@@ -13,9 +13,11 @@ import { loginCustomer } from "../api";
 import { customerKeys } from "../queries";
 import { setCustomerToken } from "@/lib/customerAuth";
 import { getAuthPath, getSafeNextPath } from "@/lib/redirects";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export default function LoginPage() {
   const router = useRouter();
+  const t = useMessages().login;
   const searchParams = useSearchParams();
   const nextPath = getSafeNextPath(searchParams.get("next"), "/account");
   const queryClient = useQueryClient();
@@ -42,8 +44,8 @@ export default function LoginPage() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const err: typeof errors = {};
-    if (!/^\S+@\S+\.\S+$/.test(email)) err.email = "Enter a valid email";
-    if (!password) err.password = "Password is required";
+    if (!/^\S+@\S+\.\S+$/.test(email)) err.email = t.errEmail;
+    if (!password) err.password = t.errPassword;
     setErrors(err);
     if (!Object.keys(err).length) loginMutation.mutate({ email, password });
   };
@@ -62,10 +64,10 @@ export default function LoginPage() {
             TourFlow
           </p>
           <blockquote className="mt-4 max-w-md font-display text-3xl leading-tight text-white md:text-4xl">
-            &ldquo;The world is a book, and those who do not travel read only a page.&rdquo;
+            &ldquo;{t.quote}&rdquo;
           </blockquote>
           <cite className="mt-4 text-sm not-italic text-white/70">
-            — Saint Augustine
+            {t.cite}
           </cite>
         </div>
       </div>
@@ -73,14 +75,14 @@ export default function LoginPage() {
       <div className="flex items-center justify-center px-5 py-16 md:px-12">
         <div className="w-full max-w-sm">
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
-            Sign in.
+            {t.title}
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Return to your bookings and account details.
+            {t.lead}
           </p>
           <form onSubmit={submit} className="mt-10 space-y-5" noValidate>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.email}</Label>
               <Input
                 id="email"
                 type="email"
@@ -95,7 +97,7 @@ export default function LoginPage() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.password}</Label>
               <Input
                 id="password"
                 type="password"
@@ -113,20 +115,20 @@ export default function LoginPage() {
               <p role="alert" className="text-sm text-destructive">
                 {loginMutation.error instanceof Error
                   ? loginMutation.error.message
-                  : "Login failed"}
+                  : t.failed}
               </p>
             )}
             <Button type="submit" size="lg" disabled={loginMutation.isPending} className="w-full rounded-full">
-              {loginMutation.isPending ? "Logging in…" : "Log in"}
+              {loginMutation.isPending ? t.pending : t.submit}
             </Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            {t.noAccount}{" "}
             <Link
               href={getAuthPath("/register", nextPath)}
               className="text-primary hover:underline"
             >
-              Register
+              {t.register}
             </Link>
           </p>
         </div>

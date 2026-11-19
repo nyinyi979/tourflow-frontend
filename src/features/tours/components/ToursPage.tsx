@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import type { Category } from "@/features/categories/types";
 import type { Tour } from "../types";
 import ListingCard from "./ListingCard";
+import { getMessages } from "@/lib/i18n/server";
 
 export interface TourSearchValues {
   query?: string;
@@ -14,7 +15,7 @@ export interface TourSearchValues {
   sort?: string;
 }
 
-export default function ToursPage({
+export default async function ToursPage({
   tours,
   categories,
   total,
@@ -30,15 +31,17 @@ export default function ToursPage({
   searchValues: TourSearchValues;
 }) {
   const pageCount = Math.max(1, Math.ceil(total / perPage));
+  const m = await getMessages();
+  const t = m.tours;
+  const c = m.common;
 
   return (
     <section className="mx-auto max-w-7xl px-5 pb-24 pt-14 md:px-8 md:pb-28 md:pt-20">
       <h1 className="max-w-4xl text-balance font-display text-4xl leading-[1.02] tracking-[-0.03em] text-foreground md:text-6xl">
-        Tours worth the long way in.
+        {t.title}
       </h1>
       <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-        Thoughtful itineraries, small groups, and enough breathing room to be
-        somewhere—not just pass through it.
+        {t.lead}
       </p>
 
       <form
@@ -46,21 +49,21 @@ export default function ToursPage({
         className="mt-10 grid gap-4 rounded-2xl bg-secondary/55 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1.2fr)_repeat(3,minmax(150px,1fr))_auto] lg:items-end"
       >
         <label className="grid gap-2">
-          <span className="text-xs font-medium text-foreground">Search</span>
+          <span className="text-xs font-medium text-foreground">{c.search}</span>
           <span className="relative">
             <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               name="query"
               defaultValue={searchValues.query}
-              placeholder="Place or tour name"
+              placeholder={t.placeholder}
               className="pl-9"
             />
           </span>
         </label>
         <FilterSelect
           name="categoryId"
-          label="Category"
-          emptyLabel="All categories"
+          label={c.category}
+          emptyLabel={c.allCategories}
           defaultValue={searchValues.categoryId}
           options={categories.map((category) => ({
             value: category.id,
@@ -69,37 +72,36 @@ export default function ToursPage({
         />
         <FilterSelect
           name="difficulty"
-          label="Difficulty"
-          emptyLabel="Any difficulty"
+          label={t.difficulty}
+          emptyLabel={t.anyDifficulty}
           defaultValue={searchValues.difficulty}
-          options={[
-            { value: "Easy", label: "Easy" },
-            { value: "Moderate", label: "Moderate" },
-            { value: "Challenging", label: "Challenging" },
-          ]}
+          options={["Easy", "Moderate", "Challenging"].map((value) => ({
+            value,
+            label: c.difficulty[value],
+          }))}
         />
         <FilterSelect
           name="sort"
-          label="Sort by"
-          emptyLabel="Most popular"
+          label={c.sortBy}
+          emptyLabel={c.mostPopular}
           defaultValue={searchValues.sort}
           options={[
-            { value: "rating-desc", label: "Top rated" },
-            { value: "price-asc", label: "Price: low to high" },
-            { value: "price-desc", label: "Price: high to low" },
-            { value: "createdAt-desc", label: "Newest" },
+            { value: "rating-desc", label: c.topRated },
+            { value: "price-asc", label: c.priceAsc },
+            { value: "price-desc", label: c.priceDesc },
+            { value: "createdAt-desc", label: c.newest },
           ]}
         />
-        <Button type="submit" className="sm:self-end">Show tours</Button>
+        <Button type="submit" className="sm:self-end">{t.show}</Button>
       </form>
 
       <div className="mt-8 flex items-center justify-between border-b border-border/60 pb-4">
         <p className="text-sm text-muted-foreground">
-          {total} {total === 1 ? "tour" : "tours"}
+          {t.count(total)}
         </p>
         {Object.values(searchValues).some(Boolean) && (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/tours">Clear filters</Link>
+            <Link href="/tours">{c.clearFilters}</Link>
           </Button>
         )}
       </div>
@@ -113,13 +115,13 @@ export default function ToursPage({
       ) : (
         <div className="mt-8 rounded-2xl bg-secondary/45 px-6 py-16 text-center">
           <p className="font-display text-2xl text-foreground">
-            No tours match those filters.
+            {t.noneTitle}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Try another search or clear the filters.
+            {t.noneBody}
           </p>
           <Button asChild variant="outline" className="mt-6 rounded-full">
-            <Link href="/tours">Clear filters</Link>
+            <Link href="/tours">{c.clearFilters}</Link>
           </Button>
         </div>
       )}

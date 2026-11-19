@@ -12,9 +12,13 @@ import {
 import { updateBooking } from "../api";
 import { bookingKeys, myBookingsQueryOptions } from "../queries";
 import type { Booking } from "../types";
+import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
+import { formatDate } from "@/lib/i18n/messages";
 
 export default function MyBookingsPage() {
   const router = useRouter();
+  const t = useMessages().myBookings;
+  const browseTours = useMessages().common.browseTours;
   const queryClient = useQueryClient();
   const authenticated = useSyncExternalStore(
     subscribeCustomerSession,
@@ -37,14 +41,14 @@ export default function MyBookingsPage() {
   if (bookingsQuery.isError) {
     return (
       <p className="py-24 text-center text-destructive">
-        Unable to load your bookings.
+        {t.loadError}
       </p>
     );
   }
   if (!bookingsQuery.data) {
     return (
       <p className="py-24 text-center text-muted-foreground">
-        Loading your bookings…
+        {t.loading}
       </p>
     );
   }
@@ -68,18 +72,18 @@ export default function MyBookingsPage() {
   return (
     <main className="mx-auto max-w-5xl px-5 py-16 md:px-8 md:py-24">
       <p className="text-xs uppercase tracking-[0.25em] text-primary">
-        Your trips
+        {t.eyebrow}
       </p>
-      <h1 className="mt-2 font-display text-4xl md:text-5xl">My bookings</h1>
+      <h1 className="mt-2 font-display text-4xl md:text-5xl">{t.title}</h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        View upcoming trips, payments, and booking status.
+        {t.lead}
       </p>
 
       {bookings.length === 0 ? (
         <div className="mt-10 rounded-lg border border-border/70 p-10 text-center">
-          <p className="text-muted-foreground">You have no bookings yet.</p>
+          <p className="text-muted-foreground">{t.none}</p>
           <Button asChild className="mt-5 rounded-full">
-            <Link href="/tours">Browse tours</Link>
+            <Link href="/tours">{browseTours}</Link>
           </Button>
         </div>
       ) : (
@@ -98,7 +102,11 @@ function BookingCard({
   cancelling: boolean;
   onCancel: () => void;
 }) {
-  const itemName = booking.tour?.title ?? booking.activity?.title ?? "Deleted item";
+  const locale = useLocale();
+  const m = useMessages();
+  const t = m.myBookings;
+  const itemName =
+    booking.tour?.title ?? booking.activity?.title ?? m.confirmation.deleted;
   const canCancel =
     booking.status !== "cancelled" && booking.status !== "completed";
 
@@ -111,7 +119,8 @@ function BookingCard({
           </p>
           <h2 className="mt-1 font-display text-2xl">{itemName}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            {booking.travelDate} · {booking.adults + booking.children} guest(s)
+            {formatDate(booking.travelDate, locale)} ·{" "}
+            {t.guests(booking.adults + booking.children)}
           </p>
         </div>
         <div className="text-right">
@@ -128,13 +137,15 @@ function BookingCard({
       <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border/60 pt-5">
         <p className="text-xs text-muted-foreground">
           {booking.paymentReference
-            ? `Payment reference: ${booking.paymentReference}`
-            : "Payment is still required."}
+            ? t.paymentReference(booking.paymentReference)
+            : t.paymentRequired}
         </p>
         <div className="flex gap-3">
           {booking.paymentStatus !== "paid" && booking.status !== "cancelled" && (
             <Button asChild size="sm">
-              <Link href={`/booking/payment?id=${booking.id}`}>Pay now</Link>
+              <Link href={`/booking/payment?id=${booking.id}`}>
+                {m.common.payNow}
+              </Link>
             </Button>
           )}
           {canCancel && (
@@ -144,7 +155,7 @@ function BookingCard({
               disabled={cancelling}
               onClick={onCancel}
             >
-              {cancelling ? "Cancelling…" : "Cancel booking"}
+              {cancelling ? t.cancelling : t.cancel}
             </Button>
           )}
         </div>
@@ -154,9 +165,10 @@ function BookingCard({
 }
 
 function StatusBadge({ value }: { value: string }) {
+  const status = useMessages().common.status;
   return (
     <span className="rounded-full bg-secondary px-3 py-1 text-xs capitalize">
-      {value}
+      {status[value] ?? value}
     </span>
   );
 }

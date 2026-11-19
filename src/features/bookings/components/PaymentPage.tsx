@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { payBooking } from "../api";
 import { bookingDetailQueryOptions, bookingKeys } from "../queries";
+import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
+import { formatDate } from "@/lib/i18n/messages";
 
 type PaymentForm = {
   name: string;
@@ -28,6 +30,9 @@ const emptyForm: PaymentForm = {
 export default function PaymentPage() {
   const id = useSearchParams().get("id");
   const router = useRouter();
+  const locale = useLocale();
+  const m = useMessages();
+  const t = m.payment;
   const queryClient = useQueryClient();
   const bookingQuery = useQuery(bookingDetailQueryOptions(id));
   const [form, setForm] = useState(emptyForm);
@@ -58,13 +63,13 @@ export default function PaymentPage() {
     const nextErrors: typeof errors = {};
     const cardDigits = form.cardNumber.replace(/\D/g, "");
 
-    if (!form.name.trim()) nextErrors.name = "Enter the name on the card";
-    if (cardDigits.length < 12) nextErrors.cardNumber = "Enter a valid card number";
+    if (!form.name.trim()) nextErrors.name = t.errName;
+    if (cardDigits.length < 12) nextErrors.cardNumber = t.errCard;
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(form.expiry)) {
-      nextErrors.expiry = "Use MM/YY";
+      nextErrors.expiry = t.errExpiry;
     }
     if (!/^\d{3,4}$/.test(form.securityCode)) {
-      nextErrors.securityCode = "Enter a valid security code";
+      nextErrors.securityCode = t.errCode;
     }
 
     setErrors(nextErrors);
@@ -74,16 +79,16 @@ export default function PaymentPage() {
   if (!id || bookingQuery.isError) {
     return (
       <main className="mx-auto max-w-xl px-5 py-24 text-center">
-        <h1 className="font-display text-4xl">Payment unavailable.</h1>
+        <h1 className="font-display text-4xl">{t.unavailable}</h1>
         <Button className="mt-6 rounded-full" onClick={() => router.push("/bookings")}>
-          View my bookings
+          {m.common.viewMyBookings}
         </Button>
       </main>
     );
   }
 
   if (!bookingQuery.data) {
-    return <p className="py-24 text-center text-muted-foreground">Loading payment…</p>;
+    return <p className="py-24 text-center text-muted-foreground">{t.loading}</p>;
   }
 
   const booking = bookingQuery.data.data;
@@ -91,30 +96,30 @@ export default function PaymentPage() {
     return null;
   }
 
-  const itemName = booking.tour?.title ?? booking.activity?.title ?? "Booking";
+  const itemName = booking.tour?.title ?? booking.activity?.title ?? t.booking;
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-16 md:px-8 md:py-24">
       <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
         <section>
-          <p className="text-xs uppercase tracking-[0.3em] text-primary">Payment</p>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl">Complete your booking</h1>
+          <p className="text-xs uppercase tracking-[0.3em] text-primary">{t.eyebrow}</p>
+          <h1 className="mt-3 font-display text-4xl md:text-5xl">{t.title}</h1>
           <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-muted-foreground">
             <LockKeyhole className="h-4 w-4 shrink-0 text-primary" />
-            This is a simulated checkout. Your card details stay in this browser.
+            {t.simulated}
           </div>
 
           <form className="mt-8 space-y-5" onSubmit={submit} noValidate>
             <PaymentField
               id="card-name"
-              label="Name on card"
+              label={t.nameOnCard}
               value={form.name}
               error={errors.name}
               onChange={(value) => update("name", value)}
             />
             <PaymentField
               id="card-number"
-              label="Card number"
+              label={t.cardNumber}
               value={form.cardNumber}
               error={errors.cardNumber}
               inputMode="numeric"
@@ -124,7 +129,7 @@ export default function PaymentPage() {
             <div className="grid grid-cols-2 gap-4">
               <PaymentField
                 id="expiry"
-                label="Expiry"
+                label={t.expiry}
                 value={form.expiry}
                 error={errors.expiry}
                 inputMode="numeric"
@@ -133,7 +138,7 @@ export default function PaymentPage() {
               />
               <PaymentField
                 id="security-code"
-                label="Security code"
+                label={t.securityCode}
                 value={form.securityCode}
                 error={errors.securityCode}
                 inputMode="numeric"
@@ -149,32 +154,35 @@ export default function PaymentPage() {
             >
               <CreditCard className="h-4 w-4" />
               {paymentMutation.isPending
-                ? "Processing payment…"
-                : `Pay $${booking.totalPrice.toLocaleString()}`}
+                ? t.processing
+                : t.pay(`$${booking.totalPrice.toLocaleString()}`)}
             </Button>
             {paymentMutation.isError && (
               <p className="text-sm text-destructive">
                 {paymentMutation.error instanceof Error
                   ? paymentMutation.error.message
-                  : "Payment could not be completed"}
+                  : t.failed}
               </p>
             )}
           </form>
         </section>
 
         <aside className="h-fit rounded-lg border border-border/70 bg-card p-6">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary">Order summary</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary">{m.common.orderSummary}</p>
           <h2 className="mt-3 font-display text-2xl">{itemName}</h2>
           <dl className="mt-6 space-y-3 border-b border-border/60 pb-5 text-sm">
-            <SummaryRow label="Booking" value={booking.bookingNumber} />
-            <SummaryRow label="Travel date" value={booking.travelDate} />
+            <SummaryRow label={t.booking} value={booking.bookingNumber} />
             <SummaryRow
-              label="Guests"
+              label={t.travelDate}
+              value={formatDate(booking.travelDate, locale)}
+            />
+            <SummaryRow
+              label={m.common.guests}
               value={String(booking.adults + booking.children)}
             />
           </dl>
           <div className="mt-5 flex items-baseline justify-between">
-            <span>Total</span>
+            <span>{m.common.total}</span>
             <span className="font-display text-3xl text-primary">
               ${booking.totalPrice.toLocaleString()}
             </span>

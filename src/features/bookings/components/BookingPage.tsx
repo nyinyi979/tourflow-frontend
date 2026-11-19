@@ -9,6 +9,8 @@ import { hasCustomerSession } from "@/lib/customerAuth";
 import { getAuthPath } from "@/lib/redirects";
 import { createBooking } from "../api";
 import type { BookableItem, CreateBookingRequest } from "../types";
+import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
+import { formatDate } from "@/lib/i18n/messages";
 
 interface BookingPageProps {
   item: BookableItem;
@@ -24,6 +26,9 @@ export default function BookingPage({
   childCount,
 }: BookingPageProps) {
   const router = useRouter();
+  const locale = useLocale();
+  const m = useMessages();
+  const t = m.booking;
   const guests = adults + childCount;
   const subtotal = item.price * adults + Math.round(item.price * 0.5) * childCount;
 
@@ -50,9 +55,9 @@ export default function BookingPage({
 
   return (
     <section className="mx-auto max-w-5xl px-5 pb-24 pt-14 md:px-8 md:pt-20">
-      <p className="text-xs uppercase tracking-[0.3em] text-primary">Booking</p>
+      <p className="text-xs uppercase tracking-[0.3em] text-primary">{t.eyebrow}</p>
       <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">
-        Review your selection
+        {t.title}
       </h1>
 
       <div className="mt-10 grid gap-10 md:grid-cols-[1.4fr_1fr]">
@@ -71,13 +76,17 @@ export default function BookingPage({
           <div className="space-y-4 p-6">
             <h2 className="font-display text-2xl text-foreground">{item.title}</h2>
             <dl className="grid grid-cols-2 gap-4 text-sm">
-              <Detail label="Date" value={date} />
-              <Detail label="Guests" value={String(guests)} />
+              <Detail label={m.common.date} value={formatDate(date, locale)} />
+              <Detail label={m.common.guests} value={String(guests)} />
               <Detail
-                label="Duration"
-                value={`${item.duration} ${item.itemType === "tour" ? "days" : "hours"}`}
+                label={m.common.duration}
+                value={
+                  item.itemType === "tour"
+                    ? m.common.days(item.duration)
+                    : m.common.hours(item.duration)
+                }
               />
-              <Detail label="Category" value={item.category} />
+              <Detail label={m.common.category} value={item.category} />
             </dl>
           </div>
         </div>
@@ -90,8 +99,7 @@ export default function BookingPage({
             price={item.price}
           />
           <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-            Continue to the secure payment step. New customers will be asked to
-            create an account first.
+            {t.note}
           </p>
           <Button
             size="lg"
@@ -100,14 +108,14 @@ export default function BookingPage({
             disabled={bookingMutation.isPending}
           >
             {bookingMutation.isPending
-              ? "Creating booking…"
-              : `Continue to payment · $${subtotal.toLocaleString()}`}
+              ? t.creating
+              : t.continue(`$${subtotal.toLocaleString()}`)}
           </Button>
           {bookingMutation.isError && (
             <p className="mt-3 text-sm text-destructive">
               {bookingMutation.error instanceof Error
                 ? bookingMutation.error.message
-                : "Unable to create booking"}
+                : t.error}
             </p>
           )}
         </div>
@@ -118,7 +126,7 @@ export default function BookingPage({
           href={`/${item.itemType === "tour" ? "tours" : "activities"}/${item.id}`}
           className="hover:text-primary"
         >
-          ← Back to {item.itemType}
+          {t.back(item.itemType)}
         </Link>
       </div>
     </section>
@@ -145,23 +153,27 @@ function OrderSummary({
   childrenCount: number;
   price: number;
 }) {
+  const m = useMessages();
   return (
     <div className="rounded-lg border border-border/70 bg-card p-6">
-      <h3 className="text-xs uppercase tracking-[0.3em] text-primary">Order summary</h3>
+      <h3 className="text-xs uppercase tracking-[0.3em] text-primary">{m.common.orderSummary}</h3>
       <dl className="mt-5 space-y-2 text-sm">
         <SummaryRow
-          label={`$${price.toLocaleString()} × ${adults} adult${adults === 1 ? "" : "s"}`}
+          label={m.booking.adultLine(`$${price.toLocaleString()}`, adults)}
           value={`$${(price * adults).toLocaleString()}`}
         />
         {childrenCount > 0 && (
           <SummaryRow
-            label={`$${Math.round(price * 0.5).toLocaleString()} × ${childrenCount} child${childrenCount === 1 ? "" : "ren"}`}
+            label={m.booking.childLine(
+              `$${Math.round(price * 0.5).toLocaleString()}`,
+              childrenCount,
+            )}
             value={`$${(Math.round(price * 0.5) * childrenCount).toLocaleString()}`}
           />
         )}
       </dl>
       <div className="mt-4 flex items-baseline justify-between border-t border-border/60 pt-4">
-        <span className="text-sm text-foreground">Total</span>
+        <span className="text-sm text-foreground">{m.common.total}</span>
         <span className="font-display text-2xl text-primary">${total.toLocaleString()}</span>
       </div>
     </div>

@@ -15,9 +15,13 @@ import type { Tour } from "@/features/tours/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createReview } from "../api";
+import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
+import { formatDate } from "@/lib/i18n/messages";
 
 export default function ReviewsSection({ tour }: { tour: Tour }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useMessages().reviews;
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const reviewMutation = useMutation({
@@ -40,7 +44,7 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
   return (
     <section className="mt-24 border-t border-border/60 pt-16">
       <h2 className="mb-10 font-display text-3xl text-foreground md:text-4xl">
-        Reviews
+        {t.title}
       </h2>
       <div className="grid gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16">
         <div>
@@ -48,10 +52,10 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
             <span className="font-display text-6xl text-primary">
               {tour.rating.toFixed(1)}
             </span>
-            <span className="text-sm text-muted-foreground">/ 5</span>
+            <span className="text-sm text-muted-foreground">{t.outOf}</span>
           </div>
           <div className="mt-2 text-sm text-muted-foreground">
-            Based on {tour.reviewCount} reviews
+            {t.basedOn(tour.reviewCount)}
           </div>
           <div className="mt-6 space-y-2">
             {[5, 4, 3, 2, 1].map((star) => {
@@ -84,9 +88,9 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               });
             }}
           >
-            <h3 className="font-display text-xl">Share your experience</h3>
+            <h3 className="font-display text-xl">{t.share}</h3>
             <label className="mt-4 block text-sm text-muted-foreground">
-              Rating
+              {t.rating}
               <select
                 value={rating}
                 onChange={(event) => setRating(Number(event.target.value))}
@@ -94,7 +98,7 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               >
                 {[5, 4, 3, 2, 1].map((value) => (
                   <option key={value} value={value}>
-                    {value} star{value === 1 ? "" : "s"}
+                    {t.stars(value)}
                   </option>
                 ))}
               </select>
@@ -104,28 +108,28 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               rows={4}
               value={comment}
               onChange={(event) => setComment(event.target.value)}
-              placeholder="What stood out about your trip?"
+              placeholder={t.placeholder}
               required
             />
             <div className="mt-4 flex items-center gap-4">
               <Button type="submit" disabled={reviewMutation.isPending}>
-                {reviewMutation.isPending ? "Submitting…" : "Submit review"}
+                {reviewMutation.isPending ? t.submitting : t.submit}
               </Button>
               {reviewMutation.isError && (
                 <p className="text-sm text-destructive">
                   {reviewMutation.error instanceof Error
                     ? reviewMutation.error.message
-                    : "Unable to submit review"}
+                    : t.error}
                 </p>
               )}
               {reviewMutation.isSuccess && (
-                <p className="text-sm text-primary">Review submitted.</p>
+                <p className="text-sm text-primary">{t.submitted}</p>
               )}
             </div>
           </form>
 
           {tour.reviews.length === 0 && (
-            <p className="text-sm text-muted-foreground">No reviews yet.</p>
+            <p className="text-sm text-muted-foreground">{t.none}</p>
           )}
           <ul className="space-y-8">
           {tour.reviews.map((r) => (
@@ -147,7 +151,7 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
                       {r.customerName}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {new Date(r.reviewedAt).toLocaleDateString()}
+                      {formatDate(r.reviewedAt, locale)}
                     </div>
                   </div>
                   <div className="mt-1 flex gap-0.5">
