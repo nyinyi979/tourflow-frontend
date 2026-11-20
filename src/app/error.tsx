@@ -6,16 +6,16 @@ import { useMessages } from "@/lib/i18n/LocaleProvider";
 export default function Error({ reset }: { reset: () => void }) {
   const t = useMessages().error;
   return (
-    <section className="flex min-h-[60svh] items-center justify-center px-5 py-20">
-      <div className="max-w-md text-center">
-        <h1 className="font-display text-4xl leading-tight text-foreground md:text-5xl">
+    <section className="mx-auto max-w-360 px-4 pb-24 pt-16 md:px-8 md:pb-32 md:pt-24">
+      <div className="max-w-2xl border-t border-foreground pt-8">
+        <h1 className="text-display text-foreground">
           {t.title}
         </h1>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-5 max-w-md text-base leading-relaxed text-foreground/75">
           {t.body}
         </p>
-        <Button onClick={reset} size="lg" className="mt-7 rounded-full">
-          <RotateCcw aria-hidden="true" /> {t.retry}
+        <Button onClick={reset} size="lg" className="mt-7">
+          <RotateCcw aria-hidden="true" strokeWidth={1.5} /> {t.retry}
         </Button>
       </div>
     </section>

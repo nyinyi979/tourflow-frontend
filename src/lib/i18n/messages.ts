@@ -83,6 +83,7 @@ const en = {
   },
   layout: {
     skip: "Skip to content",
+    backToTop: "Back to top",
   },
   footer: {
     heading: "Unsure where to go? Tell us how you want the trip to feel.",
@@ -112,6 +113,7 @@ const en = {
     featuredEyebrow: "Featured tours",
     featuredTitle: "Three trips we'd take",
     featuredAccent: "this season.",
+    featuredBadge: "Featured",
     allTours: "All tours",
     seeAllTours: "See all tours",
     moodEyebrow: "Browse by mood",
@@ -441,6 +443,7 @@ const th: Messages = {
   },
   layout: {
     skip: "ข้ามไปยังเนื้อหา",
+    backToTop: "กลับขึ้นด้านบน",
   },
   footer: {
     heading: "ยังไม่รู้จะไปไหนดี? บอกเราว่าอยากให้ทริปนี้รู้สึกแบบไหน",
@@ -469,6 +472,7 @@ const th: Messages = {
     featuredEyebrow: "ทัวร์แนะนำ",
     featuredTitle: "สามทริปที่เราอยากไป",
     featuredAccent: "ในฤดูกาลนี้",
+    featuredBadge: "แนะนำ",
     allTours: "ทัวร์ทั้งหมด",
     seeAllTours: "ดูทัวร์ทั้งหมด",
     moodEyebrow: "เลือกตามสไตล์",

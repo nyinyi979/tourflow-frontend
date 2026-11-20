@@ -1,30 +1,28 @@
 import "./globals.css";
 import { Metadata } from "next";
-import { Fraunces, Inter, Noto_Sans_Thai, Noto_Serif_Thai } from "next/font/google";
+import { Cabin, Fira_Mono, Noto_Sans_Thai } from "next/font/google";
 import Providers from "./providers";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { BackToTop } from "@/components/BackToTop";
 import NextTopLoader from "nextjs-toploader";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { getLocale, getMessages } from "@/lib/i18n/server";
 
-const fraunces = Fraunces({
+/* Cabin stands in for Gill Sans; Fira Mono sets labels, nav and prices. */
+const cabin = Cabin({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  weight: ["400", "500"],
+  variable: "--font-cabin",
 });
 
-const inter = Inter({
+const firaMono = Fira_Mono({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500"],
+  variable: "--font-fira-mono",
 });
 
-/* Thai glyphs fall through to these: a serif for headings, a sans for text. */
-const serifThai = Noto_Serif_Thai({
-  subsets: ["thai"],
-  weight: ["400", "500", "600"],
-  variable: "--font-serif-thai",
-});
-
+/* Thai glyphs fall through to this in both stacks. */
 const sansThai = Noto_Sans_Thai({
   subsets: ["thai"],
   weight: ["400", "500", "600"],
@@ -69,18 +67,21 @@ export default async function RootLayout({
   const locale = await getLocale();
   const t = await getMessages();
   return (
-    <html lang={locale}>
-      <body
-        className={`${fraunces.variable} ${inter.variable} ${serifThai.variable} ${sansThai.variable}`}
-      >
+    // The font variables must sit on <html>: Tailwind's --font-sans/--font-mono
+    // are declared on :root and resolve var(--font-cabin) there.
+    <html
+      lang={locale}
+      className={`${cabin.variable} ${firaMono.variable} ${sansThai.variable}`}
+    >
+      <body>
         <LocaleProvider locale={locale}>
           <a
             href="#main-content"
-            className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg transition-transform focus:translate-y-0"
+            className="label-mono fixed left-4 top-3 z-[100] -translate-y-20 bg-primary px-4 py-2 text-primary-foreground transition-transform focus:translate-y-0"
           >
             {t.layout.skip}
           </a>
-          <NextTopLoader color="#b56b45" height={3} showSpinner={false} />
+          <NextTopLoader color="#b56b45" height={2} showSpinner={false} />
           <Navbar />
           <Providers>
             <main id="main-content" tabIndex={-1}>
@@ -88,6 +89,7 @@ export default async function RootLayout({
             </main>
           </Providers>
           <Footer />
+          <BackToTop />
         </LocaleProvider>
       </body>
     </html>

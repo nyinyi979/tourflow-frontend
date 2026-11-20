@@ -3,38 +3,33 @@ import { getMessages } from "@/lib/i18n/server";
 
 export default async function ContactPage() {
   const t = (await getMessages()).contact;
+  const rows = [
+    { label: t.studio, value: t.address },
+    { label: t.email, value: "hello@tourflow.travel" },
+    { label: t.hours, value: t.hoursValue },
+  ];
   return (
-    <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-      <div className="grid gap-16 md:grid-cols-[1fr_1.2fr] md:gap-24">
-        <div>
-          <h1 className="text-balance font-display text-5xl leading-[1.02] tracking-[-0.03em] text-foreground md:text-6xl">
-            {t.title}
-          </h1>
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            {t.eyebrow}
-          </p>
-          <div className="mt-10 space-y-6 text-sm text-muted-foreground">
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground">
-                {t.studio}
-              </div>
-              <p className="mt-1">{t.address}</p>
+    <section className="mx-auto max-w-360 px-4 pb-24 pt-12 md:px-8 md:pb-32 md:pt-16">
+      <p className="label-mono text-muted-foreground">{t.eyebrow}</p>
+      <h1 className="mt-4 max-w-4xl text-balance text-display text-foreground">
+        {t.title}
+      </h1>
+
+      <div className="mt-12 grid gap-14 border-t border-foreground pt-8 md:mt-16 md:grid-cols-12 md:gap-8 md:pt-10">
+        <dl className="md:col-span-6">
+          {rows.map((row) => (
+            <div
+              key={row.label}
+              className="grid gap-1 border-b border-foreground/25 py-4 first:pt-0 sm:grid-cols-[8rem_1fr] sm:gap-6"
+            >
+              <dt className="label-mono pt-1 text-muted-foreground">{row.label}</dt>
+              <dd className="text-subheading text-foreground">{row.value}</dd>
             </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground">
-                {t.email}
-              </div>
-              <p className="mt-1">hello@tourflow.travel</p>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground">
-                {t.hours}
-              </div>
-              <p className="mt-1">{t.hoursValue}</p>
-            </div>
-          </div>
+          ))}
+        </dl>
+        <div className="md:col-span-5 md:col-start-8">
+          <ContactForm />
         </div>
-        <ContactForm />
       </div>
     </section>
   );

@@ -51,33 +51,34 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="grid min-h-[calc(100vh-72px)] lg:grid-cols-2">
-      <div className="relative hidden overflow-hidden lg:block">
-        <Image
-          src={heroImg}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="relative flex h-full flex-col justify-end p-14">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/80">
-            TourFlow
-          </p>
-          <blockquote className="mt-4 max-w-md font-display text-3xl leading-tight text-white md:text-4xl">
+    <section className="grid min-h-[calc(100svh-var(--header-height))] lg:grid-cols-2">
+      <div className="hidden flex-col border-r border-foreground lg:flex">
+        <div className="relative flex-1 overflow-hidden bg-muted">
+          <Image
+            src={heroImg}
+            alt=""
+            fill
+            sizes="50vw"
+            placeholder="blur"
+            className="object-cover"
+          />
+        </div>
+        <figure className="border-t border-foreground px-8 py-8 xl:px-12">
+          <blockquote className="max-w-lg text-balance text-heading text-foreground">
             &ldquo;{t.quote}&rdquo;
           </blockquote>
-          <cite className="mt-4 text-sm not-italic text-white/70">
+          <figcaption className="label-mono mt-4 text-muted-foreground">
             {t.cite}
-          </cite>
-        </div>
+          </figcaption>
+        </figure>
       </div>
 
-      <div className="flex items-center justify-center px-5 py-16 md:px-12">
-        <div className="w-full max-w-sm">
-          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
+      <div className="flex items-center justify-center px-4 py-16 md:px-12">
+        <div className="w-full max-w-md">
+          <h1 className="text-display text-foreground">
             {t.title}
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 text-base leading-relaxed text-foreground/75">
             {t.lead}
           </p>
           <form onSubmit={submit} className="mt-10 space-y-5" noValidate>
@@ -118,15 +119,15 @@ export default function LoginPage() {
                   : t.failed}
               </p>
             )}
-            <Button type="submit" size="lg" disabled={loginMutation.isPending} className="w-full rounded-full">
+            <Button type="submit" size="lg" disabled={loginMutation.isPending} className="w-full">
               {loginMutation.isPending ? t.pending : t.submit}
             </Button>
           </form>
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-6 border-t border-foreground/25 pt-5 text-[0.9375rem] text-muted-foreground">
             {t.noAccount}{" "}
             <Link
               href={getAuthPath("/register", nextPath)}
-              className="text-primary hover:underline"
+              className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
             >
               {t.register}
             </Link>

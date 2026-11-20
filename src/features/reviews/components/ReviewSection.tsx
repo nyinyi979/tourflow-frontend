@@ -14,6 +14,13 @@ import { cn } from "@/lib/utils";
 import type { Tour } from "@/features/tours/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createReview } from "../api";
 import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
 import { formatDate } from "@/lib/i18n/messages";
@@ -42,19 +49,19 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
   const totalReviews = tour.reviews.length;
 
   return (
-    <section className="mt-24 border-t border-border/60 pt-16">
-      <h2 className="mb-10 font-display text-3xl text-foreground md:text-4xl">
+    <section className="mt-24 md:mt-32">
+      <h2 className="mb-10 border-b border-foreground pb-5 text-heading text-foreground">
         {t.title}
       </h2>
-      <div className="grid gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16">
-        <div>
+      <div className="grid gap-12 md:grid-cols-12 md:gap-8">
+        <div className="md:col-span-4">
           <div className="flex items-baseline gap-2">
-            <span className="font-display text-6xl text-primary">
+            <span className="text-[4rem] leading-none text-foreground">
               {tour.rating.toFixed(1)}
             </span>
-            <span className="text-sm text-muted-foreground">{t.outOf}</span>
+            <span className="label-mono text-muted-foreground">{t.outOf}</span>
           </div>
-          <div className="mt-2 text-sm text-muted-foreground">
+          <div className="label-mono mt-3 text-muted-foreground">
             {t.basedOn(tour.reviewCount)}
           </div>
           <div className="mt-6 space-y-2">
@@ -62,10 +69,10 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               const count = buckets[star - 1];
               const pct = totalReviews ? (count / totalReviews) * 100 : 0;
               return (
-                <div key={star} className="flex items-center gap-3 text-xs">
+                <div key={star} className="label-price flex items-center gap-3">
                   <span className="w-4 text-muted-foreground">{star}</span>
                   <Star className="h-3 w-3 fill-accent text-accent" />
-                  <Progress value={pct} className="h-1.5 flex-1" />
+                  <Progress value={pct} className="h-1 flex-1" />
                   <span className="w-6 text-right text-muted-foreground">
                     {count}
                   </span>
@@ -75,9 +82,9 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
           </div>
         </div>
 
-        <div>
+        <div className="md:col-span-8">
           <form
-            className="mb-10 rounded-lg border border-border/70 bg-card p-5"
+            className="mb-12 border border-foreground bg-card p-5 md:p-6"
             onSubmit={(event) => {
               event.preventDefault();
               if (!comment.trim()) return;
@@ -88,21 +95,30 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
               });
             }}
           >
-            <h3 className="font-display text-xl">{t.share}</h3>
-            <label className="mt-4 block text-sm text-muted-foreground">
-              {t.rating}
-              <select
-                value={rating}
-                onChange={(event) => setRating(Number(event.target.value))}
-                className="ml-3 rounded-md border border-input bg-background px-3 py-2 text-foreground"
+            <h3 className="text-subheading">{t.share}</h3>
+            <div className="mt-4 flex items-center gap-3">
+              <span id="review-rating-label" className="label-mono text-muted-foreground">
+                {t.rating}
+              </span>
+              <Select
+                value={String(rating)}
+                onValueChange={(value) => setRating(Number(value))}
               >
-                {[5, 4, 3, 2, 1].map((value) => (
-                  <option key={value} value={value}>
-                    {t.stars(value)}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <SelectTrigger
+                  aria-labelledby="review-rating-label"
+                  className="h-10 w-40"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <SelectItem key={value} value={String(value)}>
+                      {t.stars(value)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Textarea
               className="mt-4"
               rows={4}
@@ -131,11 +147,11 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
           {tour.reviews.length === 0 && (
             <p className="text-sm text-muted-foreground">{t.none}</p>
           )}
-          <ul className="space-y-8">
+          <ul className="border-t border-foreground">
           {tour.reviews.map((r) => (
             <li
               key={r.id}
-              className="border-b border-border/50 pb-8 last:border-0"
+              className="border-b border-foreground/20 py-7"
             >
               <div className="flex items-start gap-4">
                 <Avatar className="h-11 w-11">
@@ -150,7 +166,7 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
                     <div className="font-medium text-foreground">
                       {r.customerName}
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="label-price text-muted-foreground">
                       {formatDate(r.reviewedAt, locale)}
                     </div>
                   </div>
@@ -167,7 +183,7 @@ export default function ReviewsSection({ tour }: { tour: Tour }) {
                       />
                     ))}
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-foreground/90">
+                  <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-foreground/90">
                     {r.comment}
                   </p>
                 </div>

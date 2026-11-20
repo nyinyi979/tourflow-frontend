@@ -54,15 +54,15 @@ export default function BookingPage({
   };
 
   return (
-    <section className="mx-auto max-w-5xl px-5 pb-24 pt-14 md:px-8 md:pt-20">
-      <p className="text-xs uppercase tracking-[0.3em] text-primary">{t.eyebrow}</p>
-      <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">
+    <section className="mx-auto max-w-6xl px-4 pb-24 pt-12 md:px-8 md:pb-32 md:pt-16">
+      <p className="label-mono text-muted-foreground">{t.eyebrow}</p>
+      <h1 className="mt-3 text-display text-foreground">
         {t.title}
       </h1>
 
-      <div className="mt-10 grid gap-10 md:grid-cols-[1.4fr_1fr]">
-        <div className="overflow-hidden rounded-lg border border-border/70">
-          <div className="relative h-64 w-full bg-muted">
+      <div className="mt-10 grid gap-10 border-t border-foreground pt-8 md:grid-cols-[1.4fr_1fr] md:gap-8">
+        <div className="overflow-hidden border border-foreground">
+          <div className="relative aspect-[16/9] w-full bg-muted">
             {item.image && (
               <Image
                 src={item.image}
@@ -73,9 +73,9 @@ export default function BookingPage({
               />
             )}
           </div>
-          <div className="space-y-4 p-6">
-            <h2 className="font-display text-2xl text-foreground">{item.title}</h2>
-            <dl className="grid grid-cols-2 gap-4 text-sm">
+          <div className="space-y-5 border-t border-foreground p-5 md:p-6">
+            <h2 className="text-title text-foreground">{item.title}</h2>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-5 text-[0.9375rem]">
               <Detail label={m.common.date} value={formatDate(date, locale)} />
               <Detail label={m.common.guests} value={String(guests)} />
               <Detail
@@ -98,12 +98,12 @@ export default function BookingPage({
             childrenCount={childCount}
             price={item.price}
           />
-          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          <p className="label-price mt-4 leading-relaxed text-muted-foreground">
             {t.note}
           </p>
           <Button
             size="lg"
-            className="mt-6 w-full rounded-full"
+            className="mt-6 w-full"
             onClick={confirmBooking}
             disabled={bookingMutation.isPending}
           >
@@ -121,10 +121,10 @@ export default function BookingPage({
         </div>
       </div>
 
-      <div className="mt-12 text-sm text-muted-foreground">
+      <div className="label-mono mt-12 text-muted-foreground">
         <Link
           href={`/${item.itemType === "tour" ? "tours" : "activities"}/${item.id}`}
-          className="hover:text-primary"
+          className="hover:text-foreground"
         >
           {t.back(item.itemType)}
         </Link>
@@ -136,7 +136,7 @@ export default function BookingPage({
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-widest text-muted-foreground">{label}</dt>
+      <dt className="label-mono text-muted-foreground">{label}</dt>
       <dd className="mt-1 text-foreground">{value}</dd>
     </div>
   );
@@ -155,9 +155,9 @@ function OrderSummary({
 }) {
   const m = useMessages();
   return (
-    <div className="rounded-lg border border-border/70 bg-card p-6">
-      <h3 className="text-xs uppercase tracking-[0.3em] text-primary">{m.common.orderSummary}</h3>
-      <dl className="mt-5 space-y-2 text-sm">
+    <div className="border border-foreground bg-card p-6">
+      <h3 className="label-mono text-muted-foreground">{m.common.orderSummary}</h3>
+      <dl className="mt-5 space-y-2 text-[0.9375rem]">
         <SummaryRow
           label={m.booking.adultLine(`$${price.toLocaleString()}`, adults)}
           value={`$${(price * adults).toLocaleString()}`}
@@ -172,9 +172,9 @@ function OrderSummary({
           />
         )}
       </dl>
-      <div className="mt-4 flex items-baseline justify-between border-t border-border/60 pt-4">
-        <span className="text-sm text-foreground">{m.common.total}</span>
-        <span className="font-display text-2xl text-primary">${total.toLocaleString()}</span>
+      <div className="mt-4 flex items-baseline justify-between border-t border-foreground pt-4">
+        <span className="text-subheading text-foreground">{m.common.total}</span>
+        <span className="text-title text-foreground">${total.toLocaleString()}</span>
       </div>
     </div>
   );

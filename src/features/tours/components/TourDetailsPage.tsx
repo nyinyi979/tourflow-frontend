@@ -1,14 +1,12 @@
 "use client";
-import { useState } from "react";
-import { Star, Check } from "lucide-react";
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
+import { DetailGallery, DetailSection } from "@/components/DetailGallery";
 import ReviewsSection from "@/features/reviews/components/ReviewSection";
 import RelatedCard from "./RelatedTourCard";
 import TourBookingCard from "./TourBookingCard";
@@ -22,142 +20,111 @@ export default function TourDetailsPage({
   tour: Tour;
   related: Tour[];
 }) {
-  const [activeImg, setActiveImg] = useState(0);
   const m = useMessages();
   const t = m.tours;
 
   return (
-    <>
-      <section className="mx-auto max-w-7xl px-5 pb-24 pt-10 md:px-8 md:pt-16">
-        {/* Gallery */}
-        <div className="grid gap-3 md:grid-cols-[2fr_1fr]">
-          <button
-            type="button"
-            className="relative aspect-[4/3] overflow-hidden rounded-md bg-muted md:aspect-[16/11]"
-          >
-            <Image
-              src={tour.images[activeImg]?.url || "https://placehold.co/600x400"}
-              alt={tour.title}
-              fill
-              sizes="(min-width: 768px) 67vw, 100vw"
-              className="object-cover"
-            />
-          </button>
-          <div className="grid grid-cols-4 gap-3 md:grid-cols-2">
-            {tour.images.slice(0, 4).map((img, i) => (
-              <button
-                key={img.id}
-                type="button"
-                onClick={() => {
-                  setActiveImg(i);
-                }}
-                className={cn(
-                  "relative object-contain overflow-hidden rounded-md bg-muted transition-opacity",
-                  activeImg === i
-                    ? "ring-2 ring-primary"
-                    : "opacity-90 hover:opacity-100",
-                )}
-              >
-                <Image
-                  src={img.url}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 17vw, 25vw"
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+    <section className="mx-auto max-w-360 px-4 pb-24 pt-8 md:px-8 md:pb-32 md:pt-12">
+      <nav className="label-mono flex flex-wrap items-center gap-2 text-muted-foreground">
+        <Link href="/tours" className="hover:text-foreground">
+          {m.nav.tours}
+        </Link>
+        <span aria-hidden="true">/</span>
+        <Link
+          href={`/tours?categoryId=${tour.categoryId}`}
+          className="hover:text-foreground"
+        >
+          {tour.category.label}
+        </Link>
+      </nav>
 
-        {/* Main */}
-        <div className="mt-14 grid gap-12 lg:grid-cols-[1.7fr_1fr] lg:gap-16">
-          <article>
-            <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
-                {tour.category.label}
-              </span>
-              <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
-                {m.common.difficultyShort[tour.difficulty] ?? tour.difficulty}
-              </span>
-              <span className="text-muted-foreground">
-                {m.common.days(tour.duration)}
-              </span>
-            </div>
-            <h1 className="mt-4 font-display text-4xl leading-tight text-foreground md:text-6xl">
-              {tour.title}
-            </h1>
-            <div className="mt-4 flex items-center gap-2 text-sm">
-              <Star className="h-4 w-4 fill-accent text-accent" />
-              <span className="font-medium">{tour.rating.toFixed(1)}</span>
-              <span className="text-muted-foreground">
-                {t.reviewCount(tour.reviewCount)}
-              </span>
-            </div>
+      <header className="mt-6 grid gap-6 pb-8 md:grid-cols-12 md:gap-8 md:pb-10">
+        <h1 className="text-balance text-display text-foreground md:col-span-8">
+          {tour.title}
+        </h1>
+        <ul className="label-mono flex flex-wrap items-center gap-x-5 gap-y-2 self-end text-foreground md:col-span-4 md:justify-end">
+          <li>{m.common.days(tour.duration)}</li>
+          <li>{m.common.difficultyShort[tour.difficulty] ?? tour.difficulty}</li>
+          <li>
+            <span aria-hidden="true" className="text-accent">★</span>{" "}
+            {tour.rating.toFixed(1)}{" "}
+            <span className="text-muted-foreground">{t.reviewCount(tour.reviewCount)}</span>
+          </li>
+        </ul>
+      </header>
 
-            <p className="mt-8 text-base leading-relaxed text-foreground/90">
-              {tour.description}
-            </p>
+      <DetailGallery images={tour.images} title={tour.title} />
 
-            <div className="mt-12">
-              <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                {t.highlights}
-              </h2>
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {tour.highlights.map((highlight) => (
+      <div className="mt-14 grid gap-14 lg:grid-cols-12 lg:gap-8">
+        <article className="lg:col-span-7">
+          <p className="text-title text-foreground/90 md:text-[1.375rem] md:leading-[1.45]">
+            {tour.description}
+          </p>
+
+          {tour.highlights.length > 0 && (
+            <DetailSection title={t.highlights}>
+              <ul className="grid sm:grid-cols-2 sm:gap-x-8">
+                {tour.highlights.map((highlight, i) => (
                   <li
                     key={highlight.id}
-                    className="flex items-start gap-3 text-sm text-foreground/90"
+                    className="flex gap-4 border-b border-foreground/20 py-3 text-[0.9375rem] text-foreground/90"
                   >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span className="label-mono pt-0.5 text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     {highlight.label}
                   </li>
                 ))}
               </ul>
-            </div>
+            </DetailSection>
+          )}
 
-            <div className="mt-14">
-              <h2 className="mb-5 text-xs uppercase tracking-[0.3em] text-primary">
-                {t.dayByDay}
-              </h2>
-              <Accordion type="single" collapsible className="w-full">
+          {tour.itinerary.length > 0 && (
+            <DetailSection title={t.dayByDay}>
+              <Accordion type="single" collapsible className="-mt-5 w-full">
                 {tour.itinerary.map((d) => (
-                  <AccordionItem key={d.id} value={`d-${d.day}`}>
+                  <AccordionItem
+                    key={d.id}
+                    value={`d-${d.day}`}
+                    className="first:border-t-0"
+                  >
                     <AccordionTrigger>
-                      <span className="font-display text-lg">
-                        <span className="mr-4 text-muted-foreground">
+                      <span className="flex items-baseline gap-5">
+                        <span className="label-mono w-14 shrink-0 text-muted-foreground">
                           {t.day(d.day)}
                         </span>
-                        {d.title}
+                        <span className="text-subheading">{d.title}</span>
                       </span>
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
+                    <AccordionContent className="pl-[4.75rem] text-foreground/75">
                       {d.description}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
-            </div>
-          </article>
+            </DetailSection>
+          )}
+        </article>
 
+        <div className="lg:col-span-4 lg:col-start-9">
           <TourBookingCard tour={tour} />
         </div>
+      </div>
 
-        {/* Reviews */}
-        <ReviewsSection tour={tour} />
+      <ReviewsSection tour={tour} />
 
-        {/* Related */}
-        <div className="mt-24">
-          <h2 className="mb-8 font-display text-3xl text-foreground md:text-4xl">
+      {related.length > 0 && (
+        <section className="mt-24 md:mt-32">
+          <h2 className="border-b border-foreground pb-5 text-heading text-foreground">
             {t.related}
           </h2>
-          <div className="grid gap-x-8 gap-y-12 md:grid-cols-3">
-            {related.map((t) => (
-              <RelatedCard key={t.id} tour={t} />
+          <div className="mt-10 grid gap-x-8 gap-y-14 md:grid-cols-3">
+            {related.map((r) => (
+              <RelatedCard key={r.id} tour={r} />
             ))}
           </div>
-        </div>
-      </section>
-    </>
+        </section>
+      )}
+    </section>
   );
 }

@@ -70,24 +70,24 @@ export default function MyBookingsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-5 py-16 md:px-8 md:py-24">
-      <p className="text-xs uppercase tracking-[0.25em] text-primary">
+    <main className="mx-auto max-w-6xl px-4 pb-24 pt-12 md:px-8 md:pb-32 md:pt-16">
+      <p className="label-mono text-muted-foreground">
         {t.eyebrow}
       </p>
-      <h1 className="mt-2 font-display text-4xl md:text-5xl">{t.title}</h1>
-      <p className="mt-3 text-sm text-muted-foreground">
+      <h1 className="mt-2 text-display">{t.title}</h1>
+      <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground/75">
         {t.lead}
       </p>
 
       {bookings.length === 0 ? (
-        <div className="mt-10 rounded-lg border border-border/70 p-10 text-center">
+        <div className="mt-10 border border-dashed border-foreground/40 p-10 text-center">
           <p className="text-muted-foreground">{t.none}</p>
-          <Button asChild className="mt-5 rounded-full">
+          <Button asChild className="mt-5">
             <Link href="/tours">{browseTours}</Link>
           </Button>
         </div>
       ) : (
-        <div className="mt-10 space-y-5">{cards}</div>
+        <div className="mt-10 space-y-4 border-t border-foreground pt-8">{cards}</div>
       )}
     </main>
   );
@@ -111,31 +111,31 @@ function BookingCard({
     booking.status !== "cancelled" && booking.status !== "completed";
 
   return (
-    <article className="rounded-lg border border-border/70 bg-card p-6">
+    <article className="border border-foreground bg-card p-5 md:p-6">
       <div className="flex flex-wrap justify-between gap-5">
         <div>
-          <p className="text-xs uppercase tracking-wider text-primary">
+          <p className="label-mono text-muted-foreground">
             {booking.bookingNumber}
           </p>
-          <h2 className="mt-1 font-display text-2xl">{itemName}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <h2 className="mt-1 text-title">{itemName}</h2>
+          <p className="label-mono mt-2 text-muted-foreground">
             {formatDate(booking.travelDate, locale)} ·{" "}
             {t.guests(booking.adults + booking.children)}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-display text-2xl text-primary">
+          <p className="text-title text-foreground">
             ${booking.totalPrice.toLocaleString()}
           </p>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex justify-end gap-2">
             <StatusBadge value={booking.status} />
             <StatusBadge value={booking.paymentStatus} />
           </div>
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border/60 pt-5">
-        <p className="text-xs text-muted-foreground">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-foreground/25 pt-5">
+        <p className="label-price text-muted-foreground">
           {booking.paymentReference
             ? t.paymentReference(booking.paymentReference)
             : t.paymentRequired}
@@ -167,7 +167,7 @@ function BookingCard({
 function StatusBadge({ value }: { value: string }) {
   const status = useMessages().common.status;
   return (
-    <span className="rounded-full bg-secondary px-3 py-1 text-xs capitalize">
+    <span className="label-price rounded-[5px] border border-foreground px-2 py-0.5 text-foreground">
       {status[value] ?? value}
     </span>
   );

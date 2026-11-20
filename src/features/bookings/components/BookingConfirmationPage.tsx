@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,9 @@ export default function BookingConfirmationPage() {
 
   if (!id || bookingQuery.isError) {
     return (
-      <section className="mx-auto max-w-2xl px-5 py-24 text-center">
-        <h1 className="font-display text-4xl">{t.unavailable}</h1>
-        <Button asChild className="mt-6 rounded-full">
+      <section className="mx-auto max-w-2xl px-4 py-24 text-center">
+        <h1 className="text-display">{t.unavailable}</h1>
+        <Button asChild className="mt-6">
           <Link href="/tours">{m.common.browseTours}</Link>
         </Button>
       </section>
@@ -36,30 +36,30 @@ export default function BookingConfirmationPage() {
   const itemName = booking.tour?.title ?? booking.activity?.title ?? t.deleted;
 
   return (
-    <section className="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center md:py-32">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-primary/10 text-primary">
-        <CheckCircle2 className="h-8 w-8" />
+    <section className="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center md:py-28">
+      <div className="grid h-14 w-14 place-items-center rounded-full border border-foreground bg-card text-primary">
+        <Check aria-hidden="true" strokeWidth={1.5} className="h-6 w-6" />
       </div>
-      <p className="mt-6 text-xs uppercase tracking-[0.3em] text-primary">
+      <p className="mt-6 label-mono text-muted-foreground">
         {paid ? t.confirmed : t.pending}
       </p>
-      <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">
+      <h1 className="mt-3 text-display text-foreground">
         {paid ? t.paidTitle : t.pendingTitle}
       </h1>
-      <p className="mt-4 max-w-md text-sm text-muted-foreground">
+      <p className="mt-4 max-w-md text-base leading-relaxed text-foreground/75">
         {paid ? t.paidBody : t.pendingBody}
       </p>
 
-      <div className="mt-10 w-full rounded-lg border border-border/70 bg-card p-6 text-left">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">
-          <span className="text-xs uppercase tracking-widest text-muted-foreground">
+      <div className="mt-10 w-full border border-foreground bg-card text-left">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-foreground px-5 py-4 md:px-6">
+          <span className="label-mono text-muted-foreground">
             {t.reference}
           </span>
-          <span className="font-display text-xl text-primary">
+          <span className="text-subheading text-foreground">
             {booking.bookingNumber}
           </span>
         </div>
-        <dl className="mt-4 space-y-3 text-sm">
+        <dl className="space-y-3 p-5 text-[0.9375rem] md:px-6">
           <Row label={t.item} value={itemName} />
           <Row label={m.common.date} value={formatDate(booking.travelDate, locale)} />
           <Row
@@ -79,16 +79,16 @@ export default function BookingConfirmationPage() {
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
         {!paid && (
-          <Button asChild size="lg" className="rounded-full">
+          <Button asChild size="lg" >
             <Link href={`/booking/payment?id=${booking.id}`}>{m.common.payNow}</Link>
           </Button>
         )}
         {paid && (
-          <Button asChild size="lg" className="rounded-full">
+          <Button asChild size="lg" >
             <Link href="/">{t.backHome}</Link>
           </Button>
         )}
-        <Button asChild size="lg" variant="outline" className="rounded-full">
+        <Button asChild size="lg" variant="outline" >
           <Link href="/bookings">{m.common.viewMyBookings}</Link>
         </Button>
       </div>

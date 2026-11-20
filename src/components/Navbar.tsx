@@ -1,7 +1,6 @@
 "use client";
-import { ArrowUpRight, Menu, X } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+import { useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +12,6 @@ import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { LanguageSwitch } from "./LanguageSwitch";
 
 const links = [
-  { href: "/", key: "home" },
   { href: "/tours", key: "tours" },
   { href: "/activities", key: "activities" },
   { href: "/about", key: "about" },
@@ -22,43 +20,37 @@ const links = [
 
 export function Navbar() {
   const t = useMessages().nav;
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  // The menu belongs to the page it was opened on, so navigating closes it.
+  const [openOn, setOpenOn] = useState<string | null>(null);
+  const open = openOn === pathname;
+  const setOpen = (next: boolean | ((o: boolean) => boolean)) =>
+    setOpenOn(
+      (typeof next === "function" ? next(open) : next) ? pathname : null,
+    );
   const authenticated = useSyncExternalStore(
     subscribeCustomerSession,
     hasCustomerSession,
     () => false,
   );
-  const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => pathname.startsWith(href);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  const linkClass = (active: boolean) =>
+    cn(
+      "label-mono relative py-1 text-foreground/70 transition-colors hover:text-foreground",
+      "after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-foreground after:transition-transform after:duration-(--motion-base) hover:after:scale-x-100",
+      active && "text-foreground after:scale-x-100",
+    );
 
   return (
-    <header className="sticky top-0 z-40 h-[var(--header-height)] border-b border-border/70 bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 md:px-8">
-        <Link
-          href="/"
-          aria-label={t.homeLabel}
-          className="rounded-sm font-display text-2xl tracking-tight text-foreground"
-        >
-          <span>
-            TourFlow<span className="text-primary">.</span>
-          </span>
-        </Link>
-
-        <nav className="hidden items-center gap-8 md:flex">
+    <header className="sticky top-0 z-40 border-b border-foreground bg-background">
+      <div className="mx-auto grid h-(--header-height) max-w-360 grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 md:px-8">
+        <nav className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className={cn(
-                "relative flex h-[var(--header-height)] items-center text-sm text-muted-foreground transition-colors hover:text-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:bg-primary after:transition-transform",
-                isActive(l.href) &&
-                  "font-semibold text-foreground after:scale-x-100",
-              )}
+              className={linkClass(isActive(l.href))}
               aria-current={isActive(l.href) ? "page" : undefined}
             >
               {t[l.key]}
@@ -66,91 +58,88 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <Link
+          href="/"
+          aria-label={t.homeLabel}
+          className="col-start-1 justify-self-start text-lg font-medium tracking-[0.02em] text-foreground md:col-start-2 md:justify-self-center"
+        >
+          TourFlow
+        </Link>
+
+        <div className="hidden items-center justify-end gap-6 md:flex">
           <LanguageSwitch />
           {authenticated && (
-            <Link
-              href="/bookings"
-              className="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
+            <Link href="/bookings" className={linkClass(isActive("/bookings"))}>
               {t.myBookings}
             </Link>
           )}
-          <Button asChild variant="ghost" className="rounded-full px-4">
-            <Link href={authenticated ? "/account" : "/login"}>
-              {authenticated ? t.myAccount : t.logIn}
-            </Link>
-          </Button>
-          <Button asChild className="rounded-full px-5">
-            <Link href="/tours">
-              {t.explore} <ArrowUpRight aria-hidden="true" />
-            </Link>
-          </Button>
+          <Link
+            href={authenticated ? "/account" : "/login"}
+            className={linkClass(
+              isActive(authenticated ? "/account" : "/login"),
+            )}
+          >
+            {authenticated ? t.myAccount : t.logIn}
+          </Link>
         </div>
 
-        <div className="flex items-center gap-1 md:hidden">
-        <LanguageSwitch />
-        <Button
-          type="button"
-          aria-label={open ? t.closeMenu : t.openMenu}
-          aria-expanded={open}
-          aria-controls="mobile-navigation"
-          variant="ghost"
-          size="icon"
-          className="rounded-full md:hidden"
-          onClick={() => setOpen((o) => !o)}
-        >
-          {open ? (
-            <X aria-hidden="true" className="h-5 w-5" />
-          ) : (
-            <Menu aria-hidden="true" className="h-5 w-5" />
-          )}
-        </Button>
+        <div className="col-start-3 flex items-center justify-end gap-3 md:hidden">
+          <LanguageSwitch />
+          <button
+            type="button"
+            aria-label={open ? t.closeMenu : t.openMenu}
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            className="-mr-2 grid h-11 w-11 cursor-pointer place-items-center text-foreground"
+            onClick={() => setOpen((o) => !o)}
+          >
+            {open ? (
+              <X aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
+            ) : (
+              <Menu aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
+            )}
+          </button>
         </div>
       </div>
 
       {open && (
         <div
           id="mobile-navigation"
-          className="border-t border-border/60 bg-background shadow-[0_18px_40px_-24px_rgba(18,31,36,0.45)] md:hidden"
+          className="border-t border-foreground bg-background md:hidden"
         >
-          <nav aria-label={t.mobile} className="flex flex-col px-5 py-4">
-            {links.map((l) => (
+          <nav aria-label={t.mobile} className="flex flex-col px-4 pb-6">
+            {[{ href: "/", key: "home" } as const, ...links].map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                aria-current={isActive(l.href) ? "page" : undefined}
-                className={cn(
-                  "flex min-h-12 items-center border-b border-border/50 text-base text-muted-foreground",
-                  isActive(l.href) && "font-semibold text-foreground",
-                )}
+                aria-current={
+                  (l.href === "/" ? pathname === "/" : isActive(l.href))
+                    ? "page"
+                    : undefined
+                }
+                className="flex min-h-14 items-center justify-between border-b border-foreground/20 text-subheading text-foreground aria-[current=page]:text-primary"
               >
                 {t[l.key]}
+                <span aria-hidden="true" className="text-base">↗</span>
               </Link>
             ))}
             {authenticated && (
               <Link
                 href="/bookings"
                 onClick={() => setOpen(false)}
-                className="flex min-h-12 items-center border-b border-border/50 text-base text-foreground"
+                className="label-mono flex min-h-12 items-center border-b border-foreground/20 text-foreground"
               >
                 {t.myBookings}
               </Link>
             )}
-            <Button asChild variant="outline" className="mt-4 rounded-full">
-              <Link
-                href={authenticated ? "/account" : "/login"}
-                onClick={() => setOpen(false)}
-              >
-                {authenticated ? t.myAccount : t.logIn}
-              </Link>
-            </Button>
-            <Button asChild className="mt-2 rounded-full">
-              <Link href="/tours">
-                {t.explore} <ArrowUpRight aria-hidden="true" />
-              </Link>
-            </Button>
+            <Link
+              href={authenticated ? "/account" : "/login"}
+              onClick={() => setOpen(false)}
+              className="label-mono flex min-h-12 items-center border-b border-foreground/20 text-foreground"
+            >
+              {authenticated ? t.myAccount : t.logIn}
+            </Link>
           </nav>
         </div>
       )}

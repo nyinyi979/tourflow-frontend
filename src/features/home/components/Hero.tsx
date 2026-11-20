@@ -1,7 +1,6 @@
 "use client";
-import { ArrowRight, MapPin, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import heroImg from "@/assets/hero.jpeg";
@@ -21,70 +20,73 @@ export function Hero() {
         fill
         priority
         sizes="100vw"
-        className="object-cover opacity-90"
+        placeholder="blur"
+        className="object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/80" />
+      {/* Darkened only where the type sits: the bottom and the left edge. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/35 to-transparent" />
 
-      <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-height))] max-w-7xl flex-col justify-end px-5 pb-10 pt-28 md:px-8 md:pb-14 md:pt-36">
-        <div className="max-w-4xl">
-          <h1 className="max-w-4xl text-balance font-display text-5xl leading-[0.94] tracking-[-0.035em] text-white sm:text-6xl md:text-7xl lg:text-8xl">
-            {t.title}
-            <br />
-            <em className="not-italic text-accent">{t.titleAccent}</em>
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
+      <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-height))] max-w-360 flex-col justify-end px-4 pb-8 pt-28 md:px-8 md:pb-10 md:pt-36">
+        <h1 className="max-w-4xl text-balance text-[clamp(2.75rem,1.6rem+5vw,5.5rem)] font-medium leading-[0.98] text-white">
+          {t.title}
+          <br />
+          <span className="text-accent">{t.titleAccent}</span>
+        </h1>
+
+        <div className="mt-8 grid gap-8 border-t border-white/40 pt-6 md:mt-12 md:grid-cols-12 md:items-end md:gap-8 md:pt-8">
+          <p className="max-w-md text-base leading-relaxed text-white/85 md:col-span-5 md:text-[1.0625rem]">
             {t.lead}
           </p>
-        </div>
 
-        <div className="mt-9 flex flex-col gap-3 md:mt-12 md:max-w-3xl md:flex-row md:items-center">
-          <form
-            role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const query = destination.trim();
-              router.push(
-                query ? `/tours?query=${encodeURIComponent(query)}` : "/tours",
-              );
-            }}
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl bg-background p-2 shadow-[0_18px_50px_-20px_rgba(0,0,0,0.65)]"
-          >
-            <label className="flex min-w-0 flex-1 items-center gap-3 px-3">
-              <MapPin
-                aria-hidden="true"
-                className="h-5 w-5 shrink-0 text-primary"
-              />
-              <span className="sr-only">{t.searchLabel}</span>
-              <input
-                type="search"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder={t.placeholder}
-                autoComplete="off"
-                className="h-11 min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-              />
-            </label>
-            <Button type="submit" size="lg" className="rounded-xl px-5 sm:px-7">
-              <Search aria-hidden="true" />
-              <span className="hidden sm:inline">{t.find}</span>
-              <span className="sm:hidden">{t.searchShort}</span>
-            </Button>
-          </form>
-          <Button
-            asChild
-            variant="ghost"
-            size="lg"
-            className="justify-center rounded-full text-white hover:bg-white/10 hover:text-white md:justify-start"
-          >
-            <Link href="/activities">
-              {t.dayTrips} <ArrowRight aria-hidden="true" />
-            </Link>
-          </Button>
-        </div>
+          <div className="md:col-span-7 md:col-start-6 lg:col-span-6 lg:col-start-7">
+            <form
+              role="search"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const query = destination.trim();
+                router.push(
+                  query ? `/tours?query=${encodeURIComponent(query)}` : "/tours",
+                );
+              }}
+              className="flex items-stretch bg-background"
+            >
+              <label className="flex min-w-0 flex-1 items-center gap-3 pl-4">
+                <Search
+                  aria-hidden="true"
+                  strokeWidth={1.5}
+                  className="h-4 w-4 shrink-0 text-foreground"
+                />
+                <span className="sr-only">{t.searchLabel}</span>
+                <input
+                  type="search"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  placeholder={t.placeholder}
+                  autoComplete="off"
+                  className="h-14 min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+              </label>
+              <button
+                type="submit"
+                className="label-mono cursor-pointer bg-primary px-5 text-primary-foreground transition-colors hover:bg-foreground sm:px-7"
+              >
+                <span className="hidden sm:inline">{t.find}</span>
+                <span className="sm:hidden">{t.searchShort}</span>
+              </button>
+            </form>
 
-        <p className="mt-6 text-sm text-white/75">
-          {t.note}
-        </p>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+              <p className="label-price text-white/70">{t.note}</p>
+              <Link
+                href="/activities"
+                className="label-mono inline-flex items-center gap-2 text-white underline decoration-white/40 underline-offset-[6px] transition-colors hover:decoration-white"
+              >
+                {t.dayTrips} <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

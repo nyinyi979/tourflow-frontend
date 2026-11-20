@@ -3,14 +3,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+  Gazette layout: a cream canvas, ink hairlines, square corners, no shadows.
+  Photography carries the colour; teal is kept for actions and ochre for
+  ratings and selection.
+*/
 :root {
-  --radius: 0.5rem;
-  --header-height: 4.5rem;
+  --radius: 0;
+  --header-height: 4rem;
   --motion-fast: 160ms;
   --motion-base: 240ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Editorial travel-magazine palette */
+  /* Palette (unchanged) */
   --cream: oklch(0.972 0.014 85);
   --ink: oklch(0.19 0.02 250);
   --teal: oklch(0.42 0.08 195);
@@ -33,8 +38,9 @@
   --accent-foreground: var(--ink);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.88 0.015 85);
-  --input: oklch(0.9 0.015 85);
+  /* Hairlines are drawn in ink; use /opacity for quieter in-list rules. */
+  --border: var(--ink);
+  --input: color-mix(in oklab, var(--ink) 35%, transparent);
   --ring: var(--teal);
 }
 
@@ -53,15 +59,31 @@
   --muted-foreground: oklch(0.68 0.02 250);
   --accent: var(--ochre);
   --accent-foreground: oklch(0.14 0.015 250);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 40%);
+  --input: oklch(1 0 0 / 25%);
   --ring: oklch(0.72 0.09 195);
 }
+
 @theme {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Square everything; the 5px tag radius is the only exception. */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-tag: 5px;
+
+  /* No elevation anywhere. */
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -86,11 +108,25 @@
   --color-teal: var(--teal);
   --color-teal-deep: var(--teal-deep);
   --color-ochre: var(--ochre);
-  --font-display:
-    var(--font-fraunces), var(--font-serif-thai), ui-serif, Georgia, serif;
+
+  /* One humanist sans for headings and text, one mono for labels. */
   --font-sans:
-    var(--font-inter), var(--font-sans-thai), ui-sans-serif, system-ui,
-    sans-serif;
+    var(--font-cabin), var(--font-sans-thai), "Gill Sans", "Gill Sans MT",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono:
+    var(--font-fira-mono), var(--font-sans-thai), ui-monospace, SFMono-Regular,
+    Menlo, Consolas, monospace;
+
+  /* Type scale */
+  --text-display: clamp(2.5rem, 1.55rem + 3.8vw, 4rem);
+  --text-display--line-height: 1.02;
+  --text-heading: clamp(1.75rem, 1.45rem + 1.1vw, 2.0625rem);
+  --text-heading--line-height: 1.2;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.25;
+  --text-subheading: 1.3125rem;
+  --text-subheading--line-height: 1.25;
 }
 
 @layer base {
@@ -108,7 +144,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
   }
 
@@ -136,21 +171,48 @@
   h4,
   h5 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
-    font-weight: 500;
+    letter-spacing: 0;
+    font-weight: 400;
   }
 }
 
-/* Thai: the tight display leading and negative tracking clip Thai vowel and
-   tone marks, and uppercase tracking spreads Thai letters apart. */
-@layer base {
-  :lang(th) :is(h1, h2, h3, h4, h5, blockquote, .font-display) {
-    line-height: 1.3 !important;
-    letter-spacing: 0 !important;
-  }
-  :lang(th) .uppercase {
-    letter-spacing: 0.04em !important;
-  }
+/* Mono labels: navigation, metadata, eyebrows, prices. */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.43;
+  font-weight: 400;
+  letter-spacing: 0.167em;
+  text-transform: uppercase;
+  font-feature-settings: "tnum" on;
+}
+
+/* Prices and footer lines use a tighter track. */
+@utility label-price {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.43;
+  letter-spacing: 0.071em;
+  text-transform: uppercase;
+  font-feature-settings: "tnum" on;
+}
+
+/* Small outlined tag that sits on photographs (category, featured). */
+@utility tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-tag);
+  background: var(--color-card);
+  color: var(--color-ink);
+  padding: 0.3rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.183em;
+  text-transform: uppercase;
 }
 
 @utility font-display {
@@ -161,6 +223,25 @@
   text-wrap: balance;
 }
 
+/* Thai: the tight display leading clips vowel and tone marks, and wide
+   uppercase tracking spreads Thai letters apart. Thai falls back to Noto Sans
+   Thai inside the mono stack, so it gets a touch more size. */
+@layer base {
+  :lang(th) :is(h1, h2, h3, h4, h5, blockquote, .font-display) {
+    line-height: 1.3 !important;
+    letter-spacing: 0 !important;
+  }
+  :lang(th) .uppercase {
+    letter-spacing: 0.04em !important;
+  }
+}
+:is(.label-mono, .label-price, .tag):lang(th) {
+  letter-spacing: 0.02em;
+  font-size: 0.8125rem;
+}
+.tag:lang(th) {
+  font-size: 0.75rem;
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

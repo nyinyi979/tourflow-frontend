@@ -42,18 +42,19 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
 
   return (
     <aside>
-      <div className="lg:sticky lg:top-28">
-        <div className="rounded-lg border border-border/70 bg-card p-6 shadow-sm">
-          <div className="flex items-baseline gap-1">
-            <span className="font-display text-3xl text-primary">
+      <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
+        <div className="border border-foreground bg-card">
+          <div className="flex items-baseline justify-between gap-3 border-b border-foreground px-5 py-4">
+            <span className="text-heading text-foreground">
               ${tour.price.toLocaleString()}
             </span>
-            <span className="text-xs text-muted-foreground">{m.common.perPerson}</span>
+            <span className="label-price text-muted-foreground">{m.common.perPerson}</span>
           </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="p-5">
+          <div className="space-y-5">
             <div>
-              <label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
+              <label className="label-mono mb-2 block text-muted-foreground">
                 {m.common.date}
               </label>
               <Popover>
@@ -61,11 +62,11 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start rounded-md text-left font-normal",
+                      "w-full justify-start border-input bg-card px-3 text-left font-sans text-[0.9375rem] normal-case tracking-normal hover:border-foreground hover:bg-card hover:text-foreground",
                       !date && "text-muted-foreground",
                     )}
                   >
-                    <CalendarIcon className="h-4 w-4" />
+                    <CalendarIcon className="h-4 w-4" strokeWidth={1.5} />
                     {date ? format(date, "PPP", { locale: dateLocale }) : t.pickDate}
                   </Button>
                 </PopoverTrigger>
@@ -102,7 +103,7 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
             />
           </div>
 
-          <div className="mt-6 space-y-2 border-t border-border/60 pt-4 text-sm">
+          <div className="mt-6 space-y-2 border-t border-foreground/25 pt-4 text-[0.9375rem]">
             <PriceRow
               label={t.adultsTimes(adults)}
               value={`$${(tour.price * adults).toLocaleString()}`}
@@ -121,7 +122,7 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
           </div>
 
           <Button
-            className="mt-6 w-full rounded-full"
+            className="mt-6 w-full"
             size="lg"
             onClick={book}
             disabled={!date}
@@ -129,16 +130,17 @@ export default function TourBookingCard({ tour }: { tour: Tour }) {
             {t.book}
           </Button>
 
-          <div className="mt-5 flex flex-col gap-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-primary" />
-              {t.freeCancel}
-            </span>
-            <span className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
-              {t.instant}
-            </span>
           </div>
+          <ul className="label-price grid border-t border-foreground/25 text-muted-foreground">
+            <li className="flex items-center gap-2 border-b border-foreground/15 px-5 py-3">
+              <ShieldCheck aria-hidden="true" strokeWidth={1.5} className="h-4 w-4 text-foreground" />
+              {t.freeCancel}
+            </li>
+            <li className="flex items-center gap-2 px-5 py-3">
+              <Zap aria-hidden="true" strokeWidth={1.5} className="h-4 w-4 text-foreground" />
+              {t.instant}
+            </li>
+          </ul>
         </div>
       </div>
     </aside>
@@ -158,7 +160,7 @@ function PriceRow({
     <div
       className={cn(
         "flex items-center justify-between",
-        bold && "pt-2 text-base font-medium text-foreground",
+        bold && "border-t border-foreground pt-3 text-subheading text-foreground",
       )}
     >
       <span className={bold ? "" : "text-muted-foreground"}>{label}</span>
@@ -187,27 +189,27 @@ function GuestStepper({
   return (
     <div className="flex items-center justify-between">
       <div>
-        <div className="text-sm font-medium text-foreground">{label}</div>
-        {sub && <div className="text-xs text-muted-foreground">{sub}</div>}
+        <div className="text-[0.9375rem] font-medium text-foreground">{label}</div>
+        {sub && <div className="label-price text-muted-foreground">{sub}</div>}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center border border-input">
         <Button
           type="button"
           size="icon"
-          variant="outline"
-          className="h-8 w-8 rounded-full"
+          variant="ghost"
+          className="h-9 w-9"
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
           aria-label={decreaseLabel}
         >
           <Minus className="h-3.5 w-3.5" />
         </Button>
-        <span className="w-6 text-center text-sm font-medium">{value}</span>
+        <span className="label-mono w-8 text-center text-foreground tabular-nums">{value}</span>
         <Button
           type="button"
           size="icon"
-          variant="outline"
-          className="h-8 w-8 rounded-full"
+          variant="ghost"
+          className="h-9 w-9"
           onClick={() => onChange(value + 1)}
           aria-label={increaseLabel}
         >

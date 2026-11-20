@@ -1,9 +1,7 @@
 "use client";
 
-import { Languages } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { Button } from "@/components/ui/button";
 import { localeCookie } from "@/lib/i18n/messages";
 import { useLocale, useMessages } from "@/lib/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -16,11 +14,15 @@ export function LanguageSwitch({ className }: { className?: string }) {
   const [pending, startTransition] = useTransition();
 
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      className={cn("rounded-full px-3", className)}
+      className={cn(
+        "label-mono inline-flex h-8 min-w-11 cursor-pointer items-center justify-center rounded-[5px] border border-foreground px-2.5 text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50",
+        className,
+      )}
       aria-label={t.switchLabel}
+      // Label and aria-label are in the other language.
+      lang={locale === "th" ? "en" : "th"}
       disabled={pending}
       onClick={() => {
         const next = locale === "th" ? "en" : "th";
@@ -28,8 +30,7 @@ export function LanguageSwitch({ className }: { className?: string }) {
         startTransition(() => router.refresh());
       }}
     >
-      <Languages aria-hidden="true" />
       {t.switchTo}
-    </Button>
+    </button>
   );
 }

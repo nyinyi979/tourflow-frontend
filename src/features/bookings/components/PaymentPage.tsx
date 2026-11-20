@@ -78,9 +78,9 @@ export default function PaymentPage() {
 
   if (!id || bookingQuery.isError) {
     return (
-      <main className="mx-auto max-w-xl px-5 py-24 text-center">
-        <h1 className="font-display text-4xl">{t.unavailable}</h1>
-        <Button className="mt-6 rounded-full" onClick={() => router.push("/bookings")}>
+      <main className="mx-auto max-w-xl px-4 py-24 text-center">
+        <h1 className="text-display">{t.unavailable}</h1>
+        <Button className="mt-6" onClick={() => router.push("/bookings")}>
           {m.common.viewMyBookings}
         </Button>
       </main>
@@ -99,17 +99,17 @@ export default function PaymentPage() {
   const itemName = booking.tour?.title ?? booking.activity?.title ?? t.booking;
 
   return (
-    <main className="mx-auto max-w-5xl px-5 py-16 md:px-8 md:py-24">
-      <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
+    <main className="mx-auto max-w-6xl px-4 pb-24 pt-12 md:px-8 md:pb-32 md:pt-16">
+      <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:gap-12">
         <section>
-          <p className="text-xs uppercase tracking-[0.3em] text-primary">{t.eyebrow}</p>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl">{t.title}</h1>
-          <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-muted-foreground">
-            <LockKeyhole className="h-4 w-4 shrink-0 text-primary" />
+          <p className="label-mono text-muted-foreground">{t.eyebrow}</p>
+          <h1 className="mt-3 text-display">{t.title}</h1>
+          <div className="label-price mt-6 flex items-center gap-3 border border-primary/30 bg-primary/5 p-4 leading-relaxed text-foreground/80">
+            <LockKeyhole aria-hidden="true" strokeWidth={1.5} className="h-4 w-4 shrink-0 text-primary" />
             {t.simulated}
           </div>
 
-          <form className="mt-8 space-y-5" onSubmit={submit} noValidate>
+          <form className="mt-8 space-y-5 border-t border-foreground pt-8" onSubmit={submit} noValidate>
             <PaymentField
               id="card-name"
               label={t.nameOnCard}
@@ -149,10 +149,10 @@ export default function PaymentPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full rounded-full"
+              className="w-full"
               disabled={paymentMutation.isPending}
             >
-              <CreditCard className="h-4 w-4" />
+              <CreditCard aria-hidden="true" strokeWidth={1.5} className="h-4 w-4" />
               {paymentMutation.isPending
                 ? t.processing
                 : t.pay(`$${booking.totalPrice.toLocaleString()}`)}
@@ -167,10 +167,10 @@ export default function PaymentPage() {
           </form>
         </section>
 
-        <aside className="h-fit rounded-lg border border-border/70 bg-card p-6">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary">{m.common.orderSummary}</p>
-          <h2 className="mt-3 font-display text-2xl">{itemName}</h2>
-          <dl className="mt-6 space-y-3 border-b border-border/60 pb-5 text-sm">
+        <aside className="h-fit border border-foreground bg-card p-5 md:p-6">
+          <p className="label-mono text-muted-foreground">{m.common.orderSummary}</p>
+          <h2 className="mt-3 text-title">{itemName}</h2>
+          <dl className="mt-6 space-y-3 border-b border-foreground pb-5 text-[0.9375rem]">
             <SummaryRow label={t.booking} value={booking.bookingNumber} />
             <SummaryRow
               label={t.travelDate}
@@ -182,8 +182,8 @@ export default function PaymentPage() {
             />
           </dl>
           <div className="mt-5 flex items-baseline justify-between">
-            <span>{m.common.total}</span>
-            <span className="font-display text-3xl text-primary">
+            <span className="text-subheading">{m.common.total}</span>
+            <span className="text-heading text-foreground">
               ${booking.totalPrice.toLocaleString()}
             </span>
           </div>
